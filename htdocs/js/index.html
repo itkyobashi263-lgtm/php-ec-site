@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最終課題「簡易ピアノアプリ」</title>
+    <style>
+        body {
+            background-color: #ddd;
+            font-family: "Noto Sans JP";
+            min-width: 375px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #autoplay-status {
+            max-width: 400px;
+            height: 30px;
+            text-align: center;
+            font-size: 18px;
+            margin: auto;
+        }
+        #textbox {
+            max-width: 400px;
+            height: 100px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #note-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #keyboard {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .key {
+            width: 60px;
+            height: 200px;
+            margin: 0 5px;
+            background-color: #fff;
+            border: 1px solid #000;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer; /* カーソルをポインターに変更 */
+        }
+
+        .key.active {
+            /* キーを押したとき、演奏されたときのキーの設定 */
+            background-color: #ddd; /* 演奏中の鍵盤の色 */
+        }
+
+        .button-functions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .converter {
+            display: flex;
+            align-items: center;
+        }
+
+        .input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer; /* カーソルをポインターに変更 */
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 自動演奏中かどうかのメッセージ-->
+        <p id="autoplay-status"></p>
+        <div id="textbox">
+            <!--  2. 音名表示エリア-->
+            <p id="note-name"></p>
+        </div>
+        <div id="keyboard">
+        <!-- 1. 鍵盤：「ドレミファソラシ」の「音名」が書かれた7つのdiv要素-->
+            <div class="key" id="C">ド</div>
+            <div class="key" id="D">レ</div>
+            <div class="key" id="E">ミ</div>
+            <div class="key" id="F">ファ</div>
+            <div class="key" id="G">ソ</div>
+            <div class="key" id="A">ラ</div>
+            <div class="key" id="H">シ</div>
+        </div>
+        <div class="button-functions">
+    <!-- 3. 自動演奏ボタン：「自動演奏」と記述されたボタン-->
+            <input type="button" value="自動演奏" id="auto-play">
+    <!-- 4. 要件外機能追加：「音名変換機能」：音名を3言語のどれかに変換するボタン-->
+            <div class="converter">
+                <label for="language-select">表示言語</label>
+                <select id="language-select">
+                    <option value="japanese">和名</option>
+                    <option value="german">ドイツ語</option>
+                    <option value="english">英語</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 0:共通定数定義・DOM定義
+        //音の情報を一本化するための定数：音名セットと周波数をまとめて定義する
+        const NOTE_DEFINITIONS = {
+            do: { japanese: "ド", german: "C", english: "C", frequency: 261.63 },
+            re: { japanese: "レ", german: "D", english: "D", frequency: 293.66 },
+            mi: { japanese: "ミ", german: "E", english: "E", frequency: 329.63 },
+            fa: { japanese: "ファ", german: "F", english: "F", frequency: 349.23 },
+            so: { japanese: "ソ", german: "G", english: "G", frequency: 392.0 },
+            la: { japanese: "ラ", german: "A", english: "A", frequency: 440.0 },
+            si: { japanese: "シ", german: "H", english: "B", frequency: 493.88 },
+            rest: { japanese: "休符", german: "Pause", english: "Rest", frequency: null },
+        };
+        const KEY_NOTE_IDS = ["do", "re", "mi", "fa", "so", "la", "si"]; // 鍵盤の順番に対応する音のIDが入った配列
+
+    // 0:DOM定義：よくつかう用語・要素を定数化
+        
+        const REST_NOTE_ID = "rest";
+        const DEFAULT_NOTE_DISPLAY_DURATION_MS = 1000;
+        const AUTO_PLAY_START_LABEL = "自動演奏";
+        const AUTO_PLAY_STOP_LABEL = "演奏中止";
+        const DEFAULT_LANGUAGE = "japanese";
+
+        const $keys = $(".key");
+        const $noteName = $("#note-name");
+        const $languageSelect = $("#language-select");
+        const $autoPlayButton = $("#auto-play");
+        const $autoPlayStatus = $("#autoplay-status");
+
+
+        const AUDIO_VOLUME = 0.2;
+        const AUDIO_WAVE_TYPE = "sine";//sine 波は素直な電子音
+
+        //
+
+        // 1:音名変換マップを作成する関数
+        /* 内部IDによる管理にしたのでここはコメントアウトする
+        // 全ての言語の音名をキーにして、日本語の音名を値にするマップを作成する
+        function getJapaneseNoteNameMap() {
+             const japaneseNoteNameMap = {};// 変換マップを格納するオブジェクトを定義：初期値は空のオブジェクト
+
+             // すべての言語ごとに、音名を日本語の音名に変換するマップを作成する
+             Object.keys(NOTE_LABELS_MAP).forEach(function (language) {
+                // NOTE_LABELS_MAPから言語ごとの音名セットを取り出して、さらにその中の音名を日本語の音名に変換するマップを作成する
+                NOTE_LABELS_MAP[language].forEach(function (label, index) {
+                    // labelは変換前の音名、indexはその音名が何番目かを示す。indexを使って日本語の音名をNOTE_LABELS_MAPから取り出す
+                    const japaneseNoteName = NOTE_LABELS_MAP.japanese[index];
+                    // 変換前の音名をキー、日本語の音名を値として変換マップに追加する
+                    japaneseNoteNameMap[label] = japaneseNoteName;
+                });
+            });
+
+            japaneseNoteNameMap[REST_NOTE] = REST_NOTE; // 休符も変換マップに追加
+
+            return japaneseNoteNameMap;
+        }
+
+        const JAPANESE_NOTE_NAME_MAP = getJapaneseNoteNameMap(); // 音名変換マップを定数化し実際に作成する
+
+        // 音名を日本語の音名に変換する関数：引数は変換前の音名、返り値は日本語の音名。変換できない場合は元の音名を返す
+        function normalizeNoteName(noteName) {
+            const normalizedNoteName = JAPANESE_NOTE_NAME_MAP[noteName];
+
+            if (normalizedNoteName === undefined) {
+                return noteName; // 変換できない場合は元の音名を返す
+            }
+
+            return normalizedNoteName;
+        }
+        //日本語コメントアウト終了
+        */
+
+        //New1:音名変換マップを作成する関数
+        //演奏処理が表示ラベルに依存しなくなるよう鍵盤の内部情報を noteId で扱う
+        // noteId と言語を引数にして、NOTE_DEFINITIONSから対応する音名を取り出す関数
+        function getNoteLabel(noteId, language) {
+            const noteDefinition = NOTE_DEFINITIONS[noteId]; // noteIdからNOTE_DEFINITIONSの中の対応する定義を取り出す
+
+            if (noteDefinition === undefined) {
+                return ""; // 変換できない場合は空文字を返す
+            }
+
+            const noteLabel = noteDefinition[language]; // 定義の中から言語に対応する音名を取り出す
+
+            if (noteLabel === undefined) {
+                return noteDefinition[DEFAULT_LANGUAGE]; // 言語に対応する音名がない場合は、デフォルト言語の音名を返す
+            }
+            return noteLabel; // 言語に対応する音名を返す
+        }
+
+        // noteIdを引数にして、NOTE_DEFINITIONsから対応する日本語の音名を取り出す関数
+        function getJapaneseLabel(noteId) {
+            return getNoteLabel(noteId, "japanese");
+        }
+
+        // noteIdを引数にして、NOTE_DEFINITIONsから対応する周波数を取り出す関数
+        function getFrequencyByNoteId(noteId) {
+            const noteDefinition = NOTE_DEFINITIONS[noteId];
+
+            if (noteDefinition === undefined) {
+                return null;
+            }
+
+            return noteDefinition.frequency;
+        }
+
+        function initializeKeyNoteIds() {
+            $keys.each(function (index) {
+                const noteId = KEY_NOTE_IDS[index]; //KEY_NOTE_IDSは、鍵盤の順番に対応する音のIDが入った配列であるとする。indexを使って対応する音のIDを取り出す
+
+                // noteIdが定義されていない場合はスキップする（安全策）
+                if (noteId === undefined) {
+                    return;
+                }
+
+                $(this).attr("data-note-id", noteId); // 鍵盤の要素に対応する音のIDをdata-note-id属性として追加する
+            });
+        }
+
+        // 鍵盤の要素を引数にして、その鍵盤のnoteIdを返す関数
+        function getKeyNoteId($keyElement) {
+            const noteId = $keyElement.attr("data-note-id"); // 鍵盤の要素からdata-note-id属性の値を取得する
+
+            if (noteId === undefined) {
+                return ""; // data-note-id属性が定義されていない場合は空文字を返す（安全策）
+            }
+            return noteId; // 鍵盤の要素からdata-note-id属性の値(=noteID)を取得して返す
+        }
+
+        // 鍵盤探索処理: noteIdを引数にして、対応する鍵盤の要素を返す関数
+        function getKeyByNoteId(noteId) {
+            return $keys.filter(function () {
+                return getKeyNoteId($(this)) === noteId;
+            });
+        }
+
+        // 鍵盤の要素を引数にして、その鍵盤のnoteIdを取り出し、さらにそのnoteIdと現在の言語を引数にして、NOTE_LABELS_MAPから音名を取り出して返す関数
+        function updateKeyLabels(language) {
+            $keys.each(function () {
+                const $keyElement = $(this);
+                const noteId = getKeyNoteId($keyElement);
+                $keyElement.text(getNoteLabel(noteId, language));
+            });
+        }
+
+        // --- 2.表示機能 ---
+        //画面に音名セットする
+        function setNoteNameDisplay(noteLabel) {
+            $noteName.text(noteLabel);
+        }
+        //音名セットを外す
+        function clearNoteNameDisplay() {
+            setNoteNameDisplay(""); // 音名表示エリアに空文字をセットする関数呼び出し
+        }
+        // 鍵盤が演奏されたときの表示処理（要件外機能追加：演奏した鍵盤は色を変更する機能）:キーの活性化
+        function activateKey($keyElement, durationMs) {
+            // キーの表示をactiveに:クラス名にactiveを追加
+            $keyElement.addClass("active");
+            // 時間が来たらactiveを除く
+            setTimeout(function () {
+                $keyElement.removeClass("active");
+            }, durationMs);
+        }
+        //キー活性化を解除する
+        function clearActiveKeys() {
+            $keys.removeClass("active");
+        }
+        //一定時間後に表示を消す予約だけする関数
+        function scheduleNoteNameClear(noteLabel, durationMs) {
+            setTimeout(function () {
+                if ($noteName.text() === noteLabel) {
+                    clearNoteNameDisplay();
+                }
+            }, durationMs);
+        }
+        
+        //ハイライト：見つけた鍵盤を光らせる処理
+        function highlightKeyByNoteId(noteId, durationMs) {
+            const $matchedKey = getKeyByNoteId(noteId);
+
+            if ($matchedKey.length === 0) {
+                return;
+            }
+
+            activateKey($matchedKey, durationMs);
+        }
+        //画面に音を表示する処理:noteIDを引数にして、音名表示とキーの表示を両方とも行う処理
+        function showNoteName(noteId, durationMs) {
+            const currentLanguage = $languageSelect.val() || DEFAULT_LANGUAGE; // 現在の言語かデフォルト言語を取得する
+            const noteLabel = getNoteLabel(noteId, currentLanguage);　// noteIdと現在の言語を引数にして、NOTE_LABELS_MAPから音名を取り出す関数を呼び出す
+            // 音名表示エリアに音名を表示
+            setNoteNameDisplay(noteLabel);
+            //一定時間後に表示を消す予約をする
+            scheduleNoteNameClear(noteLabel, durationMs);
+        }
+        //画面に音を表示しない処理：音名表示とキーの表示を両方とも消す
+        function renderRestState() {
+            clearNoteNameDisplay();
+            clearActiveKeys();
+        }
+
+        //表示処理をまとめた関数：音名表示とキーの表示を両方とも行う
+        function renderPlayedNote(noteId, durationMs) {
+            clearActiveKeys(); 
+            showNoteName(noteId, durationMs); //音名表示
+            highlightKeyByNoteId(noteId, durationMs);  //キーの表示
+        }
+
+        //renderPerformanceに音と休符の表示処理をまとめる：休符のときはキーと音名両方の表示とも消す処理（renderRestStateを呼び出す）、音があるときは音の表示処理（renderPlayedNote）を呼び出す処理
+        function renderPerformance(noteId, durationMs) {
+            if (noteId === REST_NOTE_ID) {
+                renderRestState();
+                return;
+            }
+
+            renderPlayedNote(noteId, durationMs);
+        }
+
+        // --- 3.演奏責務 ---
+        // 音の再生処理をaudioPlayerにまとめる
+        const audioPlayer = {
+            audioContext: null, //AudioContextを管理するプロパティ：初期値はnull
+            masterGainNode: null, //全ての音の出力を管理するゲインノードを管理するプロパティ：初期値はnull
+            activeAudioNodes: [], //現在鳴っている音を管理するためのプロパティ：初期値は空の配列
+
+            //初期化してブラウザ制約に対応する
+            initialize() {
+                if (this.audioContext !== null) {
+                    return; // すでに起動している場合は何もしない
+                }
+
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext; // ブラウザによっては webkitAudioContext である場合があるため、両方を試す
+
+                if (AudioContextClass === undefined) {
+                    return; //未対応ブラウザの場合は何もしない
+                }
+
+                this.audioContext = new AudioContextClass(); // AudioContext(音声空間) を作成
+                this.masterGainNode = this.audioContext.createGain(); // ボリューム調整器を作成
+                this.masterGainNode.gain.value = AUDIO_VOLUME; // ボリュームを設定
+                this.masterGainNode.connect(this.audioContext.destination); // 出力先をスピーカーに接続
+            },
+
+            // ブラウザの制限解除用関数
+            ensureReady() {
+                this.initialize(); //AudioContextの初期化
+
+                if (this.audioContext === null) {
+                    return;
+                }
+
+                if (this.audioContext.state === "suspended") {
+                    this.audioContext.resume(); //一時停止状態のときresumeすることで、ユーザー操作後の再生を可能にする
+                }
+            },
+
+            removeActiveAudioNode(oscillatorNode) {
+                this.activeAudioNodes = this.activeAudioNodes.filter(function (audioNode) {
+                    return audioNode !== oscillatorNode;
+                });
+            },
+            //演奏処理をまとめた関数：引数は音名Idと時間
+            play(noteId, durationMs) {
+                if (noteId === REST_NOTE_ID) {
+                    return;// 休符のときは音を鳴らさない
+                }
+
+                this.ensureReady(); // AudioContextの準備
+
+                if (this.audioContext === null || this.masterGainNode === null) {
+                    return;
+                }
+
+                const frequency = getFrequencyByNoteId(noteId); // noteIdを引数にして、NOTE_DEFINITIONSから対応する周波数を取り出す関数を呼び出す
+                if (frequency === null) {
+                    return; // 周波数が見つからない場合は何もしない
+                }
+
+                //音の組み立て：オシレーターとゲインノードを作成して接続する
+                const oscillatorNode = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                // 音の開始時間と終了時間を取得する
+                const startTime = this.audioContext.currentTime;
+                const endTime = startTime + (durationMs / 1000);
+                // 音色と音程をセットする
+                oscillatorNode.type = AUDIO_WAVE_TYPE;
+                oscillatorNode.frequency.setValueAtTime(frequency, startTime);
+
+                // 音の立ち上がりを自然にするため、最初は音量を0にしてからすぐに上げる(ノイズを防ぐエンベロープ制御)
+                gainNode.gain.setValueAtTime(0, startTime);// 最初は音量0で無音
+                gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.01);// 0.01秒で音量を0.5まで上げる
+                oscillatorNode.connect(gainNode); // オシレーターをゲインノードに接続
+                gainNode.connect(this.masterGainNode); // ゲインノードをマスターゲインノードに接続してスピーカーから音が出るようにする
+
+                this.activeAudioNodes.push(oscillatorNode); // 鳴っている音を管理する配列にオシレーターを追加
+
+                // 音が止まったときの処理：オシレーターが停止したときに、管理配列からオシレーターを削除し、ノードを切断してリソースを解放する
+                oscillatorNode.onended = () => {
+                    this.removeActiveAudioNode(oscillatorNode); // オシレーターが停止したときに管理配列からオシレーターを削除する
+                    oscillatorNode.disconnect(); // オシレーターを切断してリソースを解放する
+                    gainNode.disconnect(); // ゲインノードを切断してリソースを解放する
+                };
+
+                oscillatorNode.start(startTime); // 音を鳴らす
+                oscillatorNode.stop(endTime);   // 音を止める時間をセット
+            },
+
+            stopAll() {
+                this.activeAudioNodes.forEach(function (oscillatorNode) {
+                    try {
+                        oscillatorNode.stop(); // 鳴っているすべてのオシレーターを止める
+                    } catch (error) {
+                        // すでに停止済みの場合は何もしない
+                    }
+                });
+
+                this.activeAudioNodes = []; // 管理配列を空にする
+            }
+        };
+
+        // !!!. 演奏の共通入口定義：音の有無に関わらず、演奏処理を行うときはこの関数を呼び出すようにする。引数はnoteIdと時間
+        function performNote(noteId, durationMs) {
+            renderPerformance(noteId, durationMs);
+            audioPlayer.play(noteId, durationMs);
+        }
+
+        // 4:手動演奏機能
+        //演奏処理とイベント登録とを分ける
+        function handleManualKeyPress($keyElement) {
+            const noteId = getKeyNoteId($keyElement); // 鍵盤の要素からnoteIdを取得する
+            //クリックした＝音があるので演奏処理をまとめた関数を呼び出す
+            performNote(noteId, DEFAULT_NOTE_DISPLAY_DURATION_MS);
+        }
+        //手動演奏機能を有効にする処理
+        function enableManualPlay() {
+            // 二重登録防止のため初期値はoff()としてからしてから登録
+            $keys.off("click").on("click", function () {
+                handleManualKeyPress($(this));
+            });
+
+            $keys.css("cursor", "pointer");
+        }
+
+        // 手動演奏機能OFF
+        function disableManualPlay() {
+            $keys.off("click");
+            $keys.css("cursor", "default");
+        }
+
+        // --- 5. 音名変換機能 ---
+        function convertKeyLabels(language) {
+        /*　内部IDによる管理にしたのでここはコメントアウトする
+            const convertedNotes = NOTE_LABELS_MAP[language];
+
+            if (convertedNotes === undefined) {
+                return;
+            }
+
+            $keys.each(function (index) {
+                $(this).text(convertedNotes[index]); // 鍵盤の文字を変換後の音名に変更
+            });
+        }
+        //ここまでコメントアウト
+        */
+        updateKeyLabels(language);    //言語を引数とした変換処理を実行
+        }
+
+
+        $languageSelect.on("change", function () {
+            const selectedLanguage = $(this).val(); //選択された言語を取得
+            convertKeyLabels(selectedLanguage); // 言語を引数とした変換処理を実行
+        });
+
+
+
+        // --- 6. 楽譜データとパース ---
+        const shiningStarNotes = `ド(0.5秒)休符(0.5秒)ド(0.5秒)休符(0.5秒)ソ(0.5秒)休符(0.5秒)ソ(0.5秒)休符(0.5秒)ラ(0.5秒)休符(0.5秒)ラ(0.5秒)休符(0.5秒)ソ(2秒)ファ(0.5秒)休符(0.5秒)ファ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)レ(0.5秒)休符(0.5秒)レ(0.5秒)休符(0.5秒)ド(2秒)ソ(0.5秒)休符(0.5秒)ソ(0.5秒)休符(0.5秒)ファ(0.5秒)休符(0.5秒)ファ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)レ(2秒)ソ(0.5秒)休符(0.5秒)ソ(0.5秒)休符(0.5秒)ファ(0.5秒)休符(0.5秒)ファ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)レ(2秒)ド(0.5秒)休符(0.5秒)ド(0.5秒)休符(0.5秒)ソ(0.5秒)休符(0.5秒)ソ(0.5秒)休符(0.5秒)ラ(0.5秒)休符(0.5秒)ラ(0.5秒)休符(0.5秒)ソ(2秒)ファ(0.5秒)休符(0.5秒)ファ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)ミ(0.5秒)休符(0.5秒)レ(0.5秒)休符(0.5秒)レ(0.5秒)休符(0.5秒)ド(4秒)`;
+        const tulipNotes = `ド(0.5秒)レ(0.5秒)ミ(1秒)ド(0.5秒)レ(0.5秒)ミ(1秒)ソ(0.5秒)ミ(0.5秒)レ(0.5秒)ド(0.5秒)レ(0.5秒)ミ(0.5秒)レ(1秒)ド(0.5秒)レ(0.5秒)ミ(1秒)ド(0.5秒)レ(0.5秒)ミ(1秒)ソ(0.5秒)ミ(0.5秒)レ(0.5秒)ド(0.5秒)レ(0.5秒)ミ(0.5秒)ド(1秒)ソ(0.25秒)休符(0.25秒)ソ(0.25秒)休符(0.25秒)ミ(0.25秒)休符(0.25秒)ソ(0.25秒)休符(0.25秒)ラ(0.25秒)休符(0.25秒)ラ(0.25秒)休符(0.25秒)ソ(1秒)ミ(0.25秒)休符(0.25秒)ミ(0.25秒)休符(0.25秒)レ(0.25秒)休符(0.25秒)レ(0.25秒)休符(0.25秒)ド(4秒)`;
+
+        //NOTE_LABEL_TO_UD_MAPを定義：楽譜の音名を関数が読み取れるように変換するためのマップ：楽譜の音名をキー、対応する音のIDを値とするオブジェクト
+        const NOTE_LABEL_TO_ID_MAP = {
+            ド: "do",
+            レ: "re",
+            ミ: "mi",
+            ファ: "fa",
+            ソ: "so",
+            ラ: "la",
+            シ: "si",
+            休符: REST_NOTE_ID
+        };
+        //shiningStarとtulipの楽譜を関数が読み取れるように変換を行う
+        function parseNotes(scoreText) {
+            const parsedNotes = []; // 音名をキー、対応する時間を値にもつ配列を定義：初期値は空配列
+            const notePattern = /(ド|レ|ミ|ファ|ソ|ラ|シ|休符)\((\d+(\.\d+)?)秒\)/g; // 音名と時間を抽出する正規表現
+            let matchedNoteData;
+
+            while ((matchedNoteData = notePattern.exec(scoreText)) !== null) {
+                const noteLabel = matchedNoteData[1]; // 正規表現の1番目のグループが音名
+                const noteId = NOTE_LABEL_TO_ID_MAP[noteLabel]; // 音名から音のIDを取得
+
+                if (noteId === undefined) {
+                    continue; // 音名が定義されていない場合はスキップ
+                }
+                parsedNotes.push({ //noteキーとduration値を配列に追加していき、楽譜を関数が読み取れる配列へ変換する
+                    noteId: noteId, // 音のIDをnoteキーにする
+                    duration: parseFloat(matchedNoteData[2]) * 1000 //  秒数をmsにしたものを値に代入
+                });
+            }
+
+            return parsedNotes;
+        }
+
+        const shiningStarParsedNotes = parseNotes(shiningStarNotes);
+        const tulipParsedNotes = parseNotes(tulipNotes);
+
+        const SONGS = [
+            { name: "きらきら星", notes: shiningStarParsedNotes },
+            { name: "チューリップの歌", notes: tulipParsedNotes }
+        ];
+
+    
+        // --- 7. 自動演奏機能 ---
+        let isAutoPlaying = false; // 演奏中かどうかのフラグ：初期設定はしていない状態
+        let autoPlayTimerId = null; // setTimeoutを管理
+    
+        // 自動演奏開始時のUI
+        function updateAutoPlayUiForStart(songName) {
+            $autoPlayButton.val(AUTO_PLAY_STOP_LABEL);
+            $autoPlayStatus.text(`自動演奏中です：${songName}`);
+            disableManualPlay();
+            // 自動演奏中は表示を日本語に変更して固定
+            convertKeyLabels(DEFAULT_LANGUAGE);
+            $languageSelect.val(DEFAULT_LANGUAGE).prop("disabled", true);
+        }
+
+        // 中止時のUI
+        function updateAutoPlayUiForStop() {
+            $autoPlayButton.val(AUTO_PLAY_START_LABEL);
+            $autoPlayStatus.text("");
+            renderRestState();　//演奏中の表示を消す、キー不活性化
+            audioPlayer.stopAll(); //鳴っている音をすべて止める
+            enableManualPlay(); //手動演奏機能復活
+            // 言語選択を再び有効化
+            $languageSelect.prop("disabled", false);
+        }
+        //自動演奏開始をまとめた関数の中で呼び出す演奏処理をまとめた関数を定義：引数は楽譜からとった音名と時間
+        function playAutoNote(noteData) {
+            performNote(noteData.noteId, noteData.duration);
+        }
+
+        //中止機能をまとめた関数
+        function stopAutoPlay() {
+            isAutoPlaying = false;
+            clearTimeout(autoPlayTimerId);
+            autoPlayTimerId = null;
+            updateAutoPlayUiForStop();
+        }
+
+        //自動演奏開始をまとめた関数
+        function startAutoPlay() {
+            const randomSongIndex = Math.floor(Math.random() * SONGS.length); // 楽曲数に対して乱数をかけて整数値をとると１か２が選ばれる
+            const selectedSong = SONGS[randomSongIndex]; // 選ばれた数値に応じて曲を定数にセットする。
+
+            isAutoPlaying = true;
+            updateAutoPlayUiForStart(selectedSong.name);
+            audioPlayer.ensureReady(); // 自動演奏開始前にAudioContextを準備する
+
+            let currentNoteIndex = 0; ///  楽譜で何番目の音かを変数定義かつ初期値設定
+
+            function playNextNote() { //1個ずつ順番に演奏する機能
+                if (isAutoPlaying !== true) {
+                    return; // 中止されたら終了
+                }
+
+                // 曲の最後まで（楽曲の音数まで増やす)と終了時で分岐
+                // 終了時が単純なので早期リターンする
+                if (currentNoteIndex >= selectedSong.notes.length) {
+                    stopAutoPlay();
+                    return;
+                }
+
+                const currentNoteData = selectedSong.notes[currentNoteIndex]; // 楽譜から順番に音名を定数に代入、現在の楽譜の音を示す
+                // 現在の楽譜の音について演奏処理を行う。
+                playAutoNote(currentNoteData);
+                currentNoteIndex++;
+                // 次の音符の長さ分だけ待ってから次の音へ
+                autoPlayTimerId = setTimeout(playNextNote,currentNoteData.duration);
+            }
+
+            playNextNote();
+        }
+
+        $autoPlayButton.on("click", function () {
+            if (isAutoPlaying === true) {
+                stopAutoPlay();
+                return; //  演奏中におされたボタンは中止機能を作動、終了する
+            }
+
+            startAutoPlay(); //  isAutoPlaying === false,つまり演奏前におされたボタンは自動演奏機能を開始
+        });
+
+        // 8. 初期化
+        function initializeApp() {
+            initializeKeyNoteIds(); // 鍵盤にnoteIdをセットする
+            enableManualPlay(); // 手動演奏機能を有効にする
+            convertKeyLabels(DEFAULT_LANGUAGE); // 初期表示は日本語にする
+            $languageSelect.val(DEFAULT_LANGUAGE); // 言語選択も初期表示は日本語にする
+        }
+
+        initializeApp(); // アプリの初期化処理を実行する
+    </script>
+
+</body>
+</html>

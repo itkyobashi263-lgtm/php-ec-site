@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Kota Azuma's Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="src/css/style.css">
+  <script src="src/js/main.js"></script>
+</head>
+<body>
+  <header class="clearfloat">
+    <h1><span>K</span>ota Azuma's Portfolio</h1>
+    <!-- ハンバーガーボタンを追加 -->
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <!-- メニューにIDを追加 -->
+    <ul id="nav-menu">
+      <li><a href="#SelfIntroduction">自己紹介</a></li>
+      <li><a href="#Sample">実装サンプル</a></li>
+      <li><a href="#Training">訓練課題</a></li>
+    </ul>
+    <div class="clear"></div>
+  </header>
+  <main>
+    <div class="main_img">
+    </div>
+    <div class="container"> <!-- ここに主要なコンテンツを格納する -->
+      <div class="titleSI">
+        <h2 class="section-title" id="SelfIntroduction">自己紹介<br>
+        <span>Self Introduction</span>
+        </h2>
+        <p>私の名前は<span>東晃太</span>です。大阪府大阪市出身で現在はディーキャリアITエキスパートにて、プログラミング学習に取り組んでおります。<br>どうぞよろしくお願いいたします。</p>
+        <img src="src/images/img01.jpg" alt="木">
+      </div>
+      <div class="introduction_flexbox">
+        <div class="list-card">
+          <h3>好きなもの・趣味<br>
+          <span>Favorites</span>
+          </h3>
+          <ul class="Favo">
+            <li>音楽鑑賞</li>
+            <li>ゲーム</li>
+            <li>ペットのお世話</li>
+          </ul>
+        </div>
+        <div class="list-card">
+          <h3>スキル<br>
+          <span>Skills</span>
+          </h3>
+          <ul class="Web">
+            <li><a href="#">HTML・CSS</a></li>
+            <li><a href="#javascript">JavaScript</a></li>
+            <li><a href="#php-mysql">PHP/MySQL</a></li>
+            <!--
+            <li><a href="#wordpress">WordPress</a></li> 
+            -->
+          </ul>
+        </div>
+      </div>
+      <div class="titleSample">
+        <h2 class="section-title" id="Sample">実装サンプル<br>
+        <span>Sample</span>
+        </h2>
+        <h3>画像ギャラリー</h3>
+        <div class="gallery_flexbox">
+          <div class="image">
+            <img src="src/images/gallery01.jpg" alt="宇宙飛行士と月">
+            <h4>宇宙飛行士と月</h4>
+            <p>幻想的な色彩の月と雲の前に、宇宙飛行士が立っています。</p>
+          </div>
+          <div class="image">
+            <img src="src/images/gallery02.jpg" alt="朝日と石">
+            <h4>朝日と石</h4>
+            <p>積み重ねられた石を、朝日が照らしています。</p>
+          </div>
+          <div class="image">
+            <img src="src/images/gallery03.jpg" alt="鏡のような湖">
+            <h4>鏡のような湖</h4> 
+            <p>空と海がどちらかわからなくなるような、鏡のような湖です。</p>
+          </div>
+          <div class="image">
+            <img src="src/images/gallery04.jpg" alt="ハートの風船">
+            <h4>ハートの風船</h4>
+            <p>青空をバックに、たくさんの色とりどりのハートの風船が浮いています。</p>
+          </div>
+        </div>
+        <h3 id="Training">訓練課題</h3>
+        <h3 id="javascript">JavaScript:簡易ピアノ</h3>
+        <a href="js/index.html"><img src="src/images/" alt="簡易ピアノ"></a>
+        <p>
+          JavaScriptのaddEventListenerとswitch文を使用して、鍵盤を叩くとそれぞれの音が出るようにしました。<br>jQueryを利用しています。
+        </p>
+        <br>  
+        <h3 id="php-mysql">PHP/MySQL:ECサイト</h3>
+        <a href="ec_site/index.php"><img src="src/images/" alt="ECサイト"></a>
+        <p>
+          PHPとMySQLを利用したECサイトです。<br>
+          ログイン機能や商品管理機能、ショッピングカート機能などを実装しました。
+        </p>  
+        <br>
+        <!--
+        <h3 id="wordpress">WordPress</h3>
+        <a href="wordpress/index.html"><img src="src/images/" alt="WordPress"></a>
+        <p>
+          WordPressで作成したサイトです。<br>
+          
+        </p>  
+        <br>
+        -->
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>Copyright © 2026 Kota Azuma</p>
+  </footer>
+</body>
+</html>
