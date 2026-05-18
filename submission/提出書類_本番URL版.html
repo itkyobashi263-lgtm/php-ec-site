@@ -1,0 +1,124 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECサイト 提出書類一式</title>
+  <style>
+    body { font-family: "Yu Gothic UI", "Yu Gothic", sans-serif; line-height: 1.7; margin: 24px; color: #222; }
+    h1, h2, h3 { margin-top: 1.4em; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+    th { background: #f5f5f5; }
+    code { background: #f2f4f7; padding: 1px 4px; border-radius: 4px; }
+    .muted { color: #666; }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</head>
+<body>
+  <h1>ECサイト 提出書類一式</h1>
+  <p class="muted">本番ログインページ: <a href="https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/login.php">https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/login.php</a></p>
+
+  <h2>1. ページ一覧</h2>
+  <table>
+    <thead>
+      <tr><th>No</th><th>ページ名</th><th>URL</th><th>概要</th><th>対象ユーザー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>ログインページ（トップ）</td><td><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/login.php</code><br><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/index.php</code></td><td>既存ユーザーがログインするページ。<code>index.php</code>アクセス時は<code>login.php</code>へ遷移。</td><td>全員</td></tr>
+      <tr><td>2</td><td>ユーザー登録ページ</td><td><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/register.php</code></td><td>新規ユーザー登録。登録後はログインページへ遷移。</td><td>未ログインユーザー</td></tr>
+      <tr><td>3</td><td>商品管理ページ</td><td><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/admin.php</code></td><td>商品追加、在庫更新、公開/非公開切替、削除を行う。</td><td>管理者（<code>ec_admin</code>）</td></tr>
+      <tr><td>4</td><td>商品一覧ページ</td><td><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/products.php</code></td><td>公開商品の一覧表示、カート追加、商品名検索（独自機能）。</td><td>一般ユーザー</td></tr>
+      <tr><td>5</td><td>ショッピングカートページ</td><td><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/cart.php</code></td><td>カート内商品の確認、数量更新、削除、購入確定。</td><td>一般ユーザー</td></tr>
+      <tr><td>6</td><td>購入完了ページ</td><td><code>https://portfolio02.dc-itex.com/kyobashi/0004/ec_site/complete.php</code></td><td>購入結果（商品・数量・小計・合計）を表示。</td><td>一般ユーザー</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. 画面遷移図</h2>
+  <div class="mermaid">
+flowchart TD
+    I[index.php] --> L[login.php]
+    L -->|ユーザー登録へ| R[register.php]
+    R -->|登録後| L
+    L -->|管理者ログイン| A[admin.php]
+    L -->|一般ログイン| P[products.php]
+    P -->|カートへ| C[cart.php]
+    C -->|購入する| O[complete.php]
+    O -->|商品一覧へ| P
+    C -->|商品一覧へ| P
+    A -->|ログアウト| L
+    P -->|ログアウト| L
+    C -->|ログアウト| L
+    O -->|ログアウト| L
+  </div>
+
+  <h2>3. コーディング規約</h2>
+  <ul>
+    <li>命名規則: 変数/関数は<code>snake_case</code>、定数は<code>UPPER_SNAKE_CASE</code>。</li>
+    <li>セキュリティ: PDOプリペアドステートメントを使用し、出力は<code>h()</code>でエスケープ。</li>
+    <li>認証: 保護ページはログインチェックを必須化。</li>
+    <li>構成: Controller=<code>htdocs/ec_site/*.php</code>、Model=<code>include/model/ec_site_model.php</code>、View=<code>include/view/ec_site_view.php</code>、定数=<code>include/config/const.php</code>。</li>
+  </ul>
+
+  <h2>4. テーブル定義書</h2>
+  <p><code>users / products / images / stocks / carts</code> の5テーブル構成。<br>主要外部キー: <code>carts.user_id</code>→<code>users.user_id</code>、<code>carts.product_id</code>→<code>products.product_id</code>、<code>images.product_id</code>→<code>products.product_id</code>、<code>stocks.product_id</code>→<code>products.product_id</code>。</p>
+
+  <h2>5. ER図</h2>
+  <div class="mermaid">
+erDiagram
+    users ||--o{ carts : has
+    products ||--o{ carts : includes
+    products ||--o| images : has
+    products ||--o| stocks : has
+
+    users {
+      int user_id PK
+      varchar user_name
+      varchar password
+      datetime create_date
+      datetime update_date
+    }
+    products {
+      int product_id PK
+      varchar product_name
+      int price
+      tinyint public_flg
+      datetime create_date
+      datetime update_date
+    }
+    images {
+      int image_id PK
+      int product_id FK
+      varchar image_name
+      datetime create_date
+      datetime update_date
+    }
+    stocks {
+      int stock_id PK
+      int product_id FK
+      int stock_qty
+      datetime create_date
+      datetime update_date
+    }
+    carts {
+      int cart_id PK
+      int user_id FK
+      int product_id FK
+      int product_qty
+      datetime create_date
+      datetime update_date
+    }
+  </div>
+
+  <h2>6. 独自機能の仕様（商品名検索）</h2>
+  <ol>
+    <li>商品一覧上部に検索フォームを配置。</li>
+    <li><code>GET</code>パラメータ<code>q</code>を受け取り、<code>product_name LIKE ?</code>で部分一致検索。</li>
+    <li>対象は公開商品（<code>public_flg = 1</code>）のみ。</li>
+    <li>検索後も入力キーワードを保持。</li>
+  </ol>
+</body>
+</html>

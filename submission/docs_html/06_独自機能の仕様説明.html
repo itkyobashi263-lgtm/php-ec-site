@@ -1,29 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>06_独自機能の仕様説明</title>
 <style>
-  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; }
-  h1 { border-bottom: 2px solid #333; padding-bottom: 5px; }
-  code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; font-family: Consolas, monospace; }
+body { font-family: "Yu Gothic UI", "Yu Gothic", sans-serif; line-height: 1.7; margin: 24px; color: #222; }
+h1,h2,h3 { margin-top: 1.4em; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+th,td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+th { background: #f6f6f6; }
+code { background: #f2f4f7; padding: 1px 4px; border-radius: 4px; }
+pre code { display:block; padding: 12px; overflow-x:auto; }
 </style>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
 </head>
 <body>
-<h1>6. 独自機能の仕様説明</h1>
-<p><strong>機能名称:</strong> 商品名キーワード絞り込み検索機能<br>
+<h1>独自機能の仕様説明（商品名キーワード絞り込み検索機能）</h1>
+<p><strong>機能名称:</strong> 商品名キーワード絞り込み検索機能
 <strong>対象ページ:</strong> 商品一覧ページ (<code>products.php</code>)</p>
-
-<h3>概要・目的</h3>
-<p>ユーザーが探したい商品を素早く見つけられるようにするため、商品名の一部を入力して一覧を絞り込む機能を追加実装した。商品数が増加した際のユーザビリティ（操作性・利便性）の向上を目的とする。</p>
-
-<h3>仕様詳細</h3>
+<p><strong>概要・目的:</strong>
+ユーザーが探したい商品を素早く見つけられるようにするため、商品名の一部を入力して一覧を絞り込む機能を追加実装した。商品数が増加した際のユーザビリティ（操作性・利便性）の向上を目的とする。</p>
+<p><strong>仕様詳細:</strong></p>
 <ol>
-  <li>商品一覧ページの上部にテキスト入力フィールド（<code>placeholder="商品名検索"</code>）と「検索」ボタンを配置する。</li>
-  <li>検索フォームは <code>GET</code> メソッドを使用し、URLパラメータ <code>?q=キーワード</code> として検索文字列を送信する。</li>
-  <li>サーバー側（<code>products.php</code> → <code>get_public_products</code>）では、検索文字列が入力されている場合、SQL文に <code>AND products.product_name LIKE ?</code> を動的に追加する。</li>
-  <li>PDOのプリペアドステートメントでプレースホルダーに <code>%キーワード%</code> を渡し、部分一致検索を安全に実行する。</li>
-  <li>検索キーワードは検索実行後もフォームの入力欄に保持され、ユーザーが現在何で検索しているのかを可視化する（<code>value</code> 属性に <code>h($query)</code> でエスケープ出力）。</li>
-  <li>空欄で検索を実行した場合は全件表示に戻る。</li>
+<li>商品一覧ページの上部にテキスト入力フィールド（<code>placeholder=&quot;商品名検索&quot;</code>）と「検索」ボタンを配置する。</li>
+<li>検索フォームは <code>GET</code> メソッドを使用し、URLパラメータ <code>?q=キーワード</code> として検索文字列を送信する。</li>
+<li>サーバー側（<code>products.php</code> → <code>get_public_products</code>）では、検索文字列が入力されている場合、SQL文に <code>AND products.product_name LIKE ?</code> を動的に追加する。</li>
+<li>PDOのプリペアドステートメントでプレースホルダーに <code>%キーワード%</code> を渡し、部分一致検索を安全に実行する。</li>
+<li>検索キーワードは検索実行後もフォームの入力欄に保持され、ユーザーが現在何で検索しているのかを可視化する（<code>value</code> 属性に <code>h($query)</code> でエスケープ出力）。</li>
+<li>空欄で検索を実行した場合は全件表示に戻る。</li>
 </ol>
+
 </body>
 </html>

@@ -1,49 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03_コーディング規約</title>
 <style>
-  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; }
-  h1 { border-bottom: 2px solid #333; padding-bottom: 5px; }
-  code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; font-family: Consolas, monospace; }
+body { font-family: "Yu Gothic UI", "Yu Gothic", sans-serif; line-height: 1.7; margin: 24px; color: #222; }
+h1,h2,h3 { margin-top: 1.4em; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+th,td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+th { background: #f6f6f6; }
+code { background: #f2f4f7; padding: 1px 4px; border-radius: 4px; }
+pre code { display:block; padding: 12px; overflow-x:auto; }
 </style>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
 </head>
 <body>
-<h1>3. コーディング規約</h1>
+<h1>コーディング規約</h1>
 <p>本プロジェクトにおいて遵守した主要なコーディング規約は以下の通りです。</p>
 <ol>
-  <li><strong>命名規則</strong>
-    <ul>
-      <li><strong>変数名・関数名</strong>: スネークケース（<code>snake_case</code>）を採用する。（例: <code>$product_name</code>, <code>get_admin_products()</code>）</li>
-      <li><strong>定数名</strong>: アッパースネークケース（<code>UPPER_SNAKE_CASE</code>）を採用する。（例: <code>DB_HOST</code>, <code>UPLOAD_DIR</code>）</li>
-      <li><strong>ファイル名</strong>: スネークケース（<code>snake_case</code>）を採用する。（例: <code>ec_site_model.php</code>）</li>
-    </ul>
-  </li>
-  <li><strong>インデント・フォーマット</strong>
-    <ul>
-      <li>インデントは <strong>半角スペース2文字</strong> を使用し、タブ（Tab）は使用しない。</li>
-      <li><code>if</code>, <code>for</code>, <code>foreach</code>, <code>while</code>, 関数定義などの開き波括弧 <code>{</code> は、ステートメントと同じ行に記述する。</li>
-    </ul>
-  </li>
-  <li><strong>セキュリティ対策（必須事項）</strong>
-    <ul>
-      <li><strong>SQLインジェクション対策</strong>: データベースとの通信にはすべて <code>PDO</code> のプリペアドステートメント（<code>prepare</code> -&gt; <code>execute</code>）を使用する。SQL文字列の直接結合は厳禁。</li>
-      <li><strong>XSS（クロスサイトスクリプティング）対策</strong>: ユーザー入力やデータベースから取得したデータをHTML画面に出力する際は、必ず <code>htmlspecialchars</code>（本プロジェクトではラッパー関数 <code>h()</code>）を通すこと。</li>
-      <li><strong>CSRF・アクセス制御</strong>: 各ページの先頭で <code>is_login()</code> 等を呼び出し、未ログインユーザーの不正な画面アクセスを防止する。</li>
-    </ul>
-  </li>
-  <li><strong>コメント・ドキュメント</strong>
-    <ul>
-      <li>各関数（モデルやビューなど）の上部には、PHPDoc形式（<code>/** ... */</code>）で関数の役割、引数、戻り値の概要を記述する。</li>
-      <li>複雑なロジックブロックには、処理の意図を簡潔なコメントで明記する。</li>
-    </ul>
-  </li>
-  <li><strong>MVC・ディレクトリ構成</strong>
-    <ul>
-      <li>ユーザーが直接アクセスする公開ディレクトリ（<code>htdocs</code>）には画面ファイルのみを配置する。</li>
-      <li>データベース処理（モデル）、共通画面パーツ（ビュー）、ルーティング等のコアロジックは非公開の <code>include</code> ディレクトリに配置し、セキュリティと関心の分離を担保する。</li>
-    </ul>
-  </li>
+<li><strong>命名規則</strong><ul>
+<li><strong>変数名・関数名</strong>: スネークケース（<code>snake_case</code>）を採用する。（例: <code>$product_name</code>, <code>get_admin_products()</code>）</li>
+<li><strong>定数名</strong>: アッパースネークケース（<code>UPPER_SNAKE_CASE</code>）を採用する。（例: <code>DB_HOST</code>, <code>UPLOAD_DIR</code>）</li>
+<li><strong>ファイル名</strong>: スネークケース（<code>snake_case</code>）を採用する。（例: <code>ec_site_model.php</code>）</li>
+</ul>
+</li>
+<li><strong>インデント・フォーマット</strong><ul>
+<li>インデントは <strong>半角スペース2文字</strong> を使用し、タブ（Tab）は使用しない。</li>
+<li><code>if</code>, <code>for</code>, <code>foreach</code>, <code>while</code>, 関数定義などの開き波括弧 <code>{</code> は、ステートメントと同じ行に記述する。</li>
+</ul>
+</li>
+<li><strong>セキュリティ対策（必須事項）</strong><ul>
+<li><strong>SQLインジェクション対策</strong>: データベースとの通信にはすべて <code>PDO</code> のプリペアドステートメント（<code>prepare</code> -&gt; <code>execute</code>）を使用する。SQL文字列の直接結合は厳禁。</li>
+<li><strong>XSS（クロスサイトスクリプティング）対策</strong>: ユーザー入力やデータベースから取得したデータをHTML画面に出力する際は、必ず <code>htmlspecialchars</code>（本プロジェクトではラッパー関数 <code>h()</code>）を通すこと。</li>
+<li><strong>CSRF・アクセス制御</strong>: 各ページの先頭で <code>is_login()</code> 等を呼び出し、未ログインユーザーの不正な画面アクセスを防止する。</li>
+</ul>
+</li>
+<li><strong>コメント・ドキュメント</strong><ul>
+<li>各関数（モデルやビューなど）の上部には、PHPDoc形式（<code>/** ... */</code>）で関数の役割、引数、戻り値の概要を記述する。</li>
+<li>複雑なロジックブロックには、処理の意図を簡潔なコメントで明記する。</li>
+</ul>
+</li>
+<li><strong>MVC・ディレクトリ構成</strong><ul>
+<li>ユーザーが直接アクセスする公開ディレクトリ（<code>htdocs</code>）には画面ファイルのみを配置する。</li>
+<li>データベース処理（モデル）、共通画面パーツ（ビュー）、ルーティング等のコアロジックは非公開の <code>include</code> ディレクトリに配置し、セキュリティと関心の分離を担保する。</li>
+</ul>
+</li>
 </ol>
+
 </body>
 </html>

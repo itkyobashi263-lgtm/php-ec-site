@@ -1,72 +1,413 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04_テーブル定義書</title>
 <style>
-  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; }
-  table { border-collapse: collapse; width: 100%; margin-bottom: 20px; font-size: 0.9em; }
-  th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-  th { background-color: #f4f4f4; text-align: center; }
-  h1 { border-bottom: 2px solid #333; padding-bottom: 5px; }
-  h3 { margin-top: 30px; border-left: 5px solid #0f6f5c; padding-left: 10px; }
-  td.center { text-align: center; }
+body { font-family: "Yu Gothic UI", "Yu Gothic", sans-serif; line-height: 1.7; margin: 24px; color: #222; }
+h1,h2,h3 { margin-top: 1.4em; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+th,td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+th { background: #f6f6f6; }
+code { background: #f2f4f7; padding: 1px 4px; border-radius: 4px; }
+pre code { display:block; padding: 12px; overflow-x:auto; }
 </style>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
 </head>
 <body>
-<h1>4. テーブル定義書</h1>
-
+<h1>テーブル定義書</h1>
 <h3><code>users</code> テーブル（ユーザー情報）</h3>
 <table>
-  <tr><th>論理名</th><th>物理名</th><th>データ型</th><th>PK</th><th>FK</th><th>NOT NULL</th><th>AUTO INC</th><th>デフォルト値</th><th>備考</th></tr>
-  <tr><td>ユーザーID</td><td>user_id</td><td>INT</td><td class="center">〇</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td>-</td><td>-</td></tr>
-  <tr><td>ユーザー名</td><td>user_name</td><td>VARCHAR(50)</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>UNIQUE制約</td></tr>
-  <tr><td>パスワード</td><td>password</td><td>VARCHAR(255)</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>ハッシュ化して保存</td></tr>
-  <tr><td>作成日時</td><td>create_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>更新日時</td><td>update_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-</table>
-
+<thead>
+<tr>
+<th align="left">論理名</th>
+<th align="left">物理名</th>
+<th align="left">データ型</th>
+<th align="center">PK</th>
+<th align="center">FK</th>
+<th align="center">NOT NULL</th>
+<th align="center">AUTO INC</th>
+<th align="left">デフォルト値</th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ユーザーID</td>
+<td align="left"><code>user_id</code></td>
+<td align="left">INT</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">ユーザー名</td>
+<td align="left"><code>user_name</code></td>
+<td align="left">VARCHAR(50)</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">UNIQUE制約</td>
+</tr>
+<tr>
+<td align="left">パスワード</td>
+<td align="left"><code>password</code></td>
+<td align="left">VARCHAR(255)</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">ハッシュ化して保存</td>
+</tr>
+<tr>
+<td align="left">作成日時</td>
+<td align="left"><code>create_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">更新日時</td>
+<td align="left"><code>update_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
 <h3><code>products</code> テーブル（商品情報）</h3>
 <table>
-  <tr><th>論理名</th><th>物理名</th><th>データ型</th><th>PK</th><th>FK</th><th>NOT NULL</th><th>AUTO INC</th><th>デフォルト値</th><th>備考</th></tr>
-  <tr><td>商品ID</td><td>product_id</td><td>INT</td><td class="center">〇</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td>-</td><td>-</td></tr>
-  <tr><td>商品名</td><td>product_name</td><td>VARCHAR(255)</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>価格</td><td>price</td><td>INT</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>公開フラグ</td><td>public_flg</td><td>TINYINT(1)</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>0</td><td>0:非公開, 1:公開</td></tr>
-  <tr><td>作成日時</td><td>create_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>更新日時</td><td>update_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-</table>
-
+<thead>
+<tr>
+<th align="left">論理名</th>
+<th align="left">物理名</th>
+<th align="left">データ型</th>
+<th align="center">PK</th>
+<th align="center">FK</th>
+<th align="center">NOT NULL</th>
+<th align="center">AUTO INC</th>
+<th align="left">デフォルト値</th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">商品ID</td>
+<td align="left"><code>product_id</code></td>
+<td align="left">INT</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">商品名</td>
+<td align="left"><code>product_name</code></td>
+<td align="left">VARCHAR(255)</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">価格</td>
+<td align="left"><code>price</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">公開フラグ</td>
+<td align="left"><code>public_flg</code></td>
+<td align="left">TINYINT(1)</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">0</td>
+<td align="left">0:非公開, 1:公開</td>
+</tr>
+<tr>
+<td align="left">作成日時</td>
+<td align="left"><code>create_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">更新日時</td>
+<td align="left"><code>update_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
 <h3><code>images</code> テーブル（画像情報）</h3>
 <table>
-  <tr><th>論理名</th><th>物理名</th><th>データ型</th><th>PK</th><th>FK</th><th>NOT NULL</th><th>AUTO INC</th><th>デフォルト値</th><th>備考</th></tr>
-  <tr><td>画像ID</td><td>image_id</td><td>INT</td><td class="center">〇</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td>-</td><td>-</td></tr>
-  <tr><td>商品ID</td><td>product_id</td><td>INT</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>CASCADE削除対応</td></tr>
-  <tr><td>画像名</td><td>image_name</td><td>VARCHAR(255)</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>物理ファイル名</td></tr>
-  <tr><td>作成日時</td><td>create_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>更新日時</td><td>update_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-</table>
-
+<thead>
+<tr>
+<th align="left">論理名</th>
+<th align="left">物理名</th>
+<th align="left">データ型</th>
+<th align="center">PK</th>
+<th align="center">FK</th>
+<th align="center">NOT NULL</th>
+<th align="center">AUTO INC</th>
+<th align="left">デフォルト値</th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">画像ID</td>
+<td align="left"><code>image_id</code></td>
+<td align="left">INT</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">商品ID</td>
+<td align="left"><code>product_id</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">CASCADE削除対応</td>
+</tr>
+<tr>
+<td align="left">画像名</td>
+<td align="left"><code>image_name</code></td>
+<td align="left">VARCHAR(255)</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">物理ファイル名</td>
+</tr>
+<tr>
+<td align="left">作成日時</td>
+<td align="left"><code>create_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">更新日時</td>
+<td align="left"><code>update_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
 <h3><code>stocks</code> テーブル（在庫情報）</h3>
 <table>
-  <tr><th>論理名</th><th>物理名</th><th>データ型</th><th>PK</th><th>FK</th><th>NOT NULL</th><th>AUTO INC</th><th>デフォルト値</th><th>備考</th></tr>
-  <tr><td>在庫ID</td><td>stock_id</td><td>INT</td><td class="center">〇</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td>-</td><td>-</td></tr>
-  <tr><td>商品ID</td><td>product_id</td><td>INT</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>CASCADE削除対応</td></tr>
-  <tr><td>在庫数</td><td>stock_qty</td><td>INT</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>作成日時</td><td>create_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>更新日時</td><td>update_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-</table>
-
+<thead>
+<tr>
+<th align="left">論理名</th>
+<th align="left">物理名</th>
+<th align="left">データ型</th>
+<th align="center">PK</th>
+<th align="center">FK</th>
+<th align="center">NOT NULL</th>
+<th align="center">AUTO INC</th>
+<th align="left">デフォルト値</th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">在庫ID</td>
+<td align="left"><code>stock_id</code></td>
+<td align="left">INT</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">商品ID</td>
+<td align="left"><code>product_id</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">CASCADE削除対応</td>
+</tr>
+<tr>
+<td align="left">在庫数</td>
+<td align="left"><code>stock_qty</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">作成日時</td>
+<td align="left"><code>create_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">更新日時</td>
+<td align="left"><code>update_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
 <h3><code>carts</code> テーブル（ショッピングカート情報）</h3>
 <table>
-  <tr><th>論理名</th><th>物理名</th><th>データ型</th><th>PK</th><th>FK</th><th>NOT NULL</th><th>AUTO INC</th><th>デフォルト値</th><th>備考</th></tr>
-  <tr><td>カートID</td><td>cart_id</td><td>INT</td><td class="center">〇</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td>-</td><td>-</td></tr>
-  <tr><td>ユーザーID</td><td>user_id</td><td>INT</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>CASCADE削除対応</td></tr>
-  <tr><td>商品ID</td><td>product_id</td><td>INT</td><td class="center">-</td><td class="center">〇</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>CASCADE削除対応</td></tr>
-  <tr><td>数量</td><td>product_qty</td><td>INT</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>作成日時</td><td>create_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-  <tr><td>更新日時</td><td>update_date</td><td>DATETIME</td><td class="center">-</td><td class="center">-</td><td class="center">〇</td><td class="center">-</td><td>-</td><td>-</td></tr>
-</table>
-<p><em>※ <code>user_id</code> と <code>product_id</code> の組み合わせでUNIQUE制約を設定し、同一ユーザーが同一商品を重複登録するのを防ぐ。</em></p>
+<thead>
+<tr>
+<th align="left">論理名</th>
+<th align="left">物理名</th>
+<th align="left">データ型</th>
+<th align="center">PK</th>
+<th align="center">FK</th>
+<th align="center">NOT NULL</th>
+<th align="center">AUTO INC</th>
+<th align="left">デフォルト値</th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">カートID</td>
+<td align="left"><code>cart_id</code></td>
+<td align="left">INT</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">ユーザーID</td>
+<td align="left"><code>user_id</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">CASCADE削除対応</td>
+</tr>
+<tr>
+<td align="left">商品ID</td>
+<td align="left"><code>product_id</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">CASCADE削除対応</td>
+</tr>
+<tr>
+<td align="left">数量</td>
+<td align="left"><code>product_qty</code></td>
+<td align="left">INT</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">作成日時</td>
+<td align="left"><code>create_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">更新日時</td>
+<td align="left"><code>update_date</code></td>
+<td align="left">DATETIME</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">〇</td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left"><em>※ <code>user_id</code> と <code>product_id</code> の組み合わせでUNIQUE制約を設定し、同一ユーザーが同一商品を重複登録するのを防ぐ。</em></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
 
 </body>
 </html>
