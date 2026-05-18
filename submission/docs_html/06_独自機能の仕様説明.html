@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; }
+  h1 { border-bottom: 2px solid #333; padding-bottom: 5px; }
+  code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<h1>6. 独自機能の仕様説明</h1>
+<p><strong>機能名称:</strong> 商品名キーワード絞り込み検索機能<br>
+<strong>対象ページ:</strong> 商品一覧ページ (<code>products.php</code>)</p>
+
+<h3>概要・目的</h3>
+<p>ユーザーが探したい商品を素早く見つけられるようにするため、商品名の一部を入力して一覧を絞り込む機能を追加実装した。商品数が増加した際のユーザビリティ（操作性・利便性）の向上を目的とする。</p>
+
+<h3>仕様詳細</h3>
+<ol>
+  <li>商品一覧ページの上部にテキスト入力フィールド（<code>placeholder="商品名検索"</code>）と「検索」ボタンを配置する。</li>
+  <li>検索フォームは <code>GET</code> メソッドを使用し、URLパラメータ <code>?q=キーワード</code> として検索文字列を送信する。</li>
+  <li>サーバー側（<code>products.php</code> → <code>get_public_products</code>）では、検索文字列が入力されている場合、SQL文に <code>AND products.product_name LIKE ?</code> を動的に追加する。</li>
+  <li>PDOのプリペアドステートメントでプレースホルダーに <code>%キーワード%</code> を渡し、部分一致検索を安全に実行する。</li>
+  <li>検索キーワードは検索実行後もフォームの入力欄に保持され、ユーザーが現在何で検索しているのかを可視化する（<code>value</code> 属性に <code>h($query)</code> でエスケープ出力）。</li>
+  <li>空欄で検索を実行した場合は全件表示に戻る。</li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  th { background-color: #f4f4f4; }
+  h1 { border-bottom: 2px solid #333; padding-bottom: 5px; }
+</style>
+</head>
+<body>
+<h1>1. ページ一覧</h1>
+<table>
+  <tr><th>項番</th><th>ページ名称</th><th>URL</th><th>概要</th><th>対象ユーザー</th></tr>
+  <tr><td>1</td><td>ログインページ（トップページ）</td><td>/htdocs/ec_site/login.php<br>/htdocs/ec_site/index.php</td><td>登録済みのユーザーがログインを行うためのページ。未ログイン時はindex.phpからここにリダイレクトされる。</td><td>全員</td></tr>
+  <tr><td>2</td><td>ユーザー登録ページ</td><td>/htdocs/ec_site/register.php</td><td>新規ユーザーの登録を行うページ。ユーザー名とパスワードを設定してアカウントを作成する。</td><td>未登録ユーザー</td></tr>
+  <tr><td>3</td><td>商品管理ページ</td><td>/htdocs/ec_site/admin.php</td><td>販売する商品の追加、在庫数の変更、公開ステータスの切り替え、商品の削除を行う管理ページ。</td><td>管理者 (ec_admin)</td></tr>
+  <tr><td>4</td><td>商品一覧ページ</td><td>/htdocs/ec_site/products.php</td><td>購入可能な商品の一覧を表示し、商品をショッピングカートに追加するためのページ。独自機能として「商品名検索機能」を備える。</td><td>一般ユーザー</td></tr>
+  <tr><td>5</td><td>ショッピングカートページ</td><td>/htdocs/ec_site/cart.php</td><td>カートに入れた商品の確認、数量の変更、商品の削除、および購入確定（チェックアウト）を行うページ。</td><td>一般ユーザー</td></tr>
+  <tr><td>6</td><td>購入完了ページ</td><td>/htdocs/ec_site/complete.php</td><td>購入が完了した商品の情報（商品名、単価、数量、小計、合計金額）を表示するページ。</td><td>一般ユーザー</td></tr>
+</table>
+</body>
+</html>
