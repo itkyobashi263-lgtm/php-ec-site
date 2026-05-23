@@ -5,11 +5,11 @@
   <title>Kota Azuma's Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="src/css/style.css">
-  <script src="src/js/main.js"></script>
+  <script src="src/js/main.js" defer></script>
 </head>
 <body>
-  <header class="clearfloat">
-    <h1><span>K</span>ota Azuma's Portfolio</h1>
+  <header>
+    <h1><a href="#"><span>K</span>ota Azuma's Portfolio</a></h1>
     <!-- ハンバーガーボタンを追加 -->
     <div class="hamburger" id="hamburger">
       <span></span>
@@ -22,7 +22,6 @@
       <li><a href="#Sample">実装サンプル</a></li>
       <li><a href="#Training">訓練課題</a></li>
     </ul>
-    <div class="clear"></div>
   </header>
   <main>
     <div class="main_img">
@@ -32,7 +31,9 @@
         <h2 class="section-title" id="SelfIntroduction">自己紹介<br>
         <span>Self Introduction</span>
         </h2>
-        <p>私の名前は<span>東晃太</span>です。大阪府大阪市出身で現在はディーキャリアITエキスパートにて、プログラミング学習に取り組んでおります。<br>どうぞよろしくお願いいたします。</p>
+        <p>私の名前は<span>東晃太</span>です。</p>
+        <p>大阪府大阪市出身で、現在はディーキャリアITエキスパートにて<br>プログラミング学習に取り組んでおります。</p>
+        <p>どうぞよろしくお願いいたします。</p>
         <img src="src/images/img01.jpg" alt="木">
       </div>
       <div class="introduction_flexbox">
@@ -54,67 +55,103 @@
             <li><a href="#">HTML・CSS</a></li>
             <li><a href="#javascript">JavaScript</a></li>
             <li><a href="#php-mysql">PHP/MySQL</a></li>
+            <li><a href="#clean-manager">AI-coding/server</a></li>
             <!--
             <li><a href="#wordpress">WordPress</a></li> 
             -->
           </ul>
         </div>
       </div>
+      <h3>自己PR・強み</h3>
+        <div class="gallery_flexbox">
+          <div class="image">
+            <img src="src/images/gallery01.jpg" alt="資格学習">
+            <h4>資格学習</h4>
+            <p>プログラマーとして成長するため、また現場で活躍できる人材になるために、日々勉強しております。<br>
+              ITパスポートや基本情報技術者試験の資格を保有。  
+            </p>
+          </div>
+          <div class="image">
+            <img src="src/images/gallery02.jpg" alt="AI">
+            <h4>AI活用・効率化</h4>
+            <p>Gemini, Codex, AntigravityなどのAIを積極的に活用し、<br>効率的な作業および品質向上に努めています。</p>
+          </div>  
+          <div class="image">
+            <img src="src/images/gallery03.jpg" alt="知識欲">
+            <h4>知的好奇心・探求心</h4> 
+            <p>プログラミングを学ぶ中で、自分の興味や関心を深め、<br>積極的に新しいことを学んでいます。
+              <br>
+              Python, TypeScript, Goなどバックエンドサイド、SQLでのDB活用・運用、AIを活用した開発などに興味があります。
+            </p>
+          </div>
+          <div class="image">
+            <img src="src/images/gallery04.jpg" alt="思いやり">
+            <h4>思いやり</h4>
+            <p>チームメンバーや組織を尊重し、常にアサーティブコミュニケーションを心がけています。</p>
+          </div>
+        </div>
       <div class="titleSample">
         <h2 class="section-title" id="Sample">実装サンプル<br>
         <span>Sample</span>
         </h2>
-        <h3>画像ギャラリー</h3>
-        <div class="gallery_flexbox">
-          <div class="image">
-            <img src="src/images/gallery01.jpg" alt="宇宙飛行士と月">
-            <h4>宇宙飛行士と月</h4>
-            <p>幻想的な色彩の月と雲の前に、宇宙飛行士が立っています。</p>
-          </div>
-          <div class="image">
-            <img src="src/images/gallery02.jpg" alt="朝日と石">
-            <h4>朝日と石</h4>
-            <p>積み重ねられた石を、朝日が照らしています。</p>
-          </div>
-          <div class="image">
-            <img src="src/images/gallery03.jpg" alt="鏡のような湖">
-            <h4>鏡のような湖</h4> 
-            <p>空と海がどちらかわからなくなるような、鏡のような湖です。</p>
-          </div>
-          <div class="image">
-            <img src="src/images/gallery04.jpg" alt="ハートの風船">
-            <h4>ハートの風船</h4>
-            <p>青空をバックに、たくさんの色とりどりのハートの風船が浮いています。</p>
-          </div>
-        </div>
         <h3 id="Training">訓練課題</h3>
-        <h3 id="javascript">JavaScript:簡易ピアノ</h3>
-        <a href="js/index.html"><img src="src/images/" alt="簡易ピアノ"></a>
-        <p>
-          JavaScriptのaddEventListenerとswitch文を使用して、鍵盤を叩くとそれぞれの音が出るようにしました。<br>jQueryを利用しています。
-        </p>
-        <br>  
-        <h3 id="php-mysql">PHP/MySQL:ECサイト</h3>
-        <a href="ec_site/index.php"><img src="src/images/" alt="ECサイト"></a>
-        <p>
-          PHPとMySQLを利用したECサイトです。<br>
-          ログイン機能や商品管理機能、ショッピングカート機能などを実装しました。
-        </p>  
-        <br>
+
+        <div class="project-item" id="javascript">
+          <h4>JavaScript: 簡易ピアノ</h4>
+          <a href="js/index.html"><img src="src/images/piano_demo.png" alt="簡易ピアノ"></a>
+          <p>
+            JavaScriptのaddEventListenerとswitch文を使用して、鍵盤を叩くとそれぞれの音が出るようにしました。<br>jQueryを利用しています。
+          </p>
+        </div>
+
+        <div class="project-item" id="php-mysql">
+          <h4>PHP/MySQL: ECサイト</h4>
+          <a href="ec_site/index.php"><img src="src/images/ec_demo.png" alt="ECサイト"></a>
+          <p>
+            PHPとMySQLを利用したECサイトです。<br>
+            ログイン機能や商品管理機能、ショッピングカート機能などを実装しました。
+          </p>
+        </div>
         <!--
-        <h3 id="wordpress">WordPress</h3>
-        <a href="wordpress/index.html"><img src="src/images/" alt="WordPress"></a>
-        <p>
-          WordPressで作成したサイトです。<br>
-          
-        </p>  
-        <br>
+        <div class="project-item" id="wordpress">
+          <h4>WordPress: </h4>
+          <a href="wordpress/index.html"><img src="src/images/" alt="WordPress"></a>
+          <p>
+            WordPressで作成したサイトです。<br>
+            
+          </p>  
+        </div>
         -->
+        <h3 id="originalTraining">独自課題</h3>
+        <div class="project-item" id="clean-manager">
+          <h4>AI-coding/ロリポップサーバー: 掃除管理アプリ (DutyShuffle)</h4>
+          <a href="http://cleanmaneger-release.joinus-dc-kyobashi.com/" target="_blank" rel="noopener noreferrer"><img src="src/images/clean_manager_login.png" alt="掃除管理アプリ Clean Manager"></a>
+          <p>
+            ローカルのみでしか機能せず、仕様の引継ぎがされなかった掃除管理アプリをAI(Antigravity, Codex)
+            を活用しつつリバースエンジニアリングし、かつサーバー上で利用できるように改修。<br>
+            ログイン機能、通知メール送信、お問い合わせフォーム作成など複数の機能を追加し、さらにリファクタリングによって保守性や可読性を向上させた改修を行い、仕様書を仕上げたうえで実装につなげました。
+          </p>
+          <p class="demo-link-wrapper">
+            <a href="src/images/clean_manager_demo.png" class="popup-trigger" data-caption="掃除管理アプリ デモ画面 (DutyShuffle)">
+              <span class="icon-image">📸</span> 掃除アプリのデモ画像
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   </main>
   <footer>
     <p>Copyright © 2026 Kota Azuma</p>
   </footer>
+  <!-- Image Popup Modal -->
+  <div id="imageModal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-content-wrapper">
+      <div class="image-container">
+        <span class="modal-close" id="modalClose" aria-label="閉じる">&times;</span>
+        <img class="modal-content" id="modalImg" src="" alt="デモ画像">
+      </div>
+      <div id="modalCaption" class="modal-caption"></div>
+    </div>
+  </div>
 </body>
 </html>
