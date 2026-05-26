@@ -106,13 +106,13 @@ if ($action === 'add_product' && is_admin()) {
    * すべての項目が入力されているか、数値が正しいか、画像ファイルが適切な形式かをチェックする。
    */
   if ($name === '' || $price === '' || $stock === '' || !$file || $file['error'] !== UPLOAD_ERR_OK) {
-    $error = '商品名・値段・在庫数・公開ステータス・商品画像をすべて入力してください。';
+    $_SESSION['flash_error'] = '商品名・値段・在庫数・公開ステータス・商品画像をすべて入力してください。';
   } elseif (!ctype_digit((string)$price) || !ctype_digit((string)$stock)) {
-    $error = '値段と在庫数は0以上の整数で入力してください。';
+    $_SESSION['flash_error'] = '値段と在庫数は0以上の整数で入力してください。';
   } else {
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     if (!in_array($ext, ['jpg', 'jpeg', 'png'], true)) {
-      $error = '商品画像はJPEGまたはPNGのみアップロードできます。';
+      $_SESSION['flash_error'] = '商品画像はJPEGまたはPNGのみアップロードできます。';
     } else {
       // アップロードされたファイルが被らないように、一意（ユニーク）なファイル名を生成する
       $saveName = uniqid('p_', true) . '.' . $ext; 
@@ -121,17 +121,18 @@ if ($action === 'add_product' && is_admin()) {
       
       // 画像ファイルを指定したディレクトリへ移動して保存する
       if (!move_uploaded_file($file['tmp_name'], $dest)) {
-        $error = '画像の保存に失敗しました。'; 
+        $_SESSION['flash_error'] = '画像の保存に失敗しました。'; 
       } else {
         if (create_product($pdo, $name, (int)$price, (int)$stock, $publicFlg === 1 ? 1 : 0, $saveName)) {
-          $message = '商品を追加しました。';
+          $_SESSION['flash_message'] = '商品を追加しました。';
         } else {
           $detail = get_last_ec_error();
-          $error = '商品追加に失敗しました。' . ($detail !== '' ? ' (' . $detail . ')' : '');
+          $_SESSION['flash_error'] = '商品追加に失敗しました。' . ($detail !== '' ? ' (' . $detail . ')' : '');
         }
       }
     }
   }
+  to_page('admin.php');
 }
 
 // 在庫数更新処理: actionがupdate_stockの場合は、在庫数のバリデーションを行い、問題がなければupdate_stock_qty()関数を呼び出して在庫数を更新する
@@ -140,11 +141,12 @@ if ($action === 'update_stock' && is_admin()) {
   $pid = (int)($_POST['product_id'] ?? 0); // 商品IDを取得する
   $qty = $_POST['stock_qty'] ?? ''; // 在庫数を取得する
   if (!ctype_digit((string)$qty)) {
-    $error = '在庫数は0以上の整数で入力してください。';
+    $_SESSION['flash_error'] = '在庫数は0以上の整数で入力してください。';
   } else {
     update_stock_qty($pdo, $pid, (int)$qty); // update_stock_qty()関数を呼び出して在庫数を更新する
-    $message = '在庫数を更新しました。'; // 成功メッセージを設定する
+    $_SESSION['flash_message'] = '在庫数を更新しました。'; // 成功メッセージを設定する
   }
+  to_page('admin.php');
 }
 
 // 公開ステータスの切り替え処理: actionがtoggle_publicの場合は、現在の公開ステータスを取得して、update_public_flg()関数を呼び出して公開ステータスを切り替える
@@ -152,14 +154,16 @@ if ($action === 'toggle_public' && is_admin()) {
   $pid = (int)($_POST['product_id'] ?? 0);
   $flg = (int)($_POST['public_flg'] ?? 0) === 1 ? 0 : 1;
   update_public_flg($pdo, $pid, $flg);
-  $message = '公開ステータスを更新しました。';
+  $_SESSION['flash_message'] = '公開ステータスを更新しました。';
+  to_page('admin.php');
 }
 
 // 商品削除処理: actionがdelete_productの場合は、delete_product()関数を呼び出して商品を削除する
 if ($action === 'delete_product' && is_admin()) {
   $pid = (int)($_POST['product_id'] ?? 0);
   delete_product($pdo, $pid);
-  $message = '商品を削除しました。';
+  $_SESSION['flash_message'] = '商品を削除しました。';
+  to_page('admin.php');
 }
 
 // カート関連の処理: actionがadd_cart、update_cart、delete_cart、checkoutの場合は、それぞれadd_to_cart()、update_cart_qty()、delete_cart_item()、checkout()関数を呼び出してカートの操作や購入処理を行う
@@ -203,5 +207,9 @@ if ($action === 'checkout' && is_login()) {
 if (!empty($_SESSION['flash_message']) && $message === '') {
   $message = $_SESSION['flash_message'];
   unset($_SESSION['flash_message']);
+}
+if (!empty($_SESSION['flash_error']) && $error === '') {
+  $error = $_SESSION['flash_error'];
+  unset($_SESSION['flash_error']);
 }
 
