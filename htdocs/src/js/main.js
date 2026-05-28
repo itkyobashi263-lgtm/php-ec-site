@@ -10,6 +10,33 @@ hamburger.addEventListener("click", () => {
   navMenu.classList.toggle("active");   // メニューを表示/非表示
 });
 
+// イージング関数付きのカスタムスムーススクロール処理（速度調整可能）
+const smoothScrollTo = (targetY, duration) => {
+  const startY = window.pageYOffset || document.documentElement.scrollTop;
+  const difference = targetY - startY;
+  let startTime = null;
+
+  const step = (currentTime) => {
+    if (!startTime) startTime = currentTime;
+    const progress = currentTime - startTime;
+    const percent = Math.min(progress / duration, 1);
+
+    // イージング関数: easeInOutCubic (滑らかに加速・減速するプレミアムなイージング)
+    const easeInOutCubic = (t) => {
+      return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    };
+
+    window.scrollTo(0, startY + difference * easeInOutCubic(percent));
+
+    // 時間がdurationに達するまでrequestAnimationFrameでアニメーションを繰り返す
+    if (progress < duration) {
+      window.requestAnimationFrame(step);
+    }
+  };
+
+  window.requestAnimationFrame(step);
+};
+
 // ページ内のリンク（#から始まるhref）をクリックした時のスムーススクロール処理
 document.querySelectorAll('a[href^="#"]').forEach(link => {
   link.addEventListener("click", function(e) {
@@ -25,21 +52,21 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 
     // href="#" の場合はページ最上部へスクロール
     if (targetId === "#") {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      // 650msかけてスムースに上部へスクロール
+      smoothScrollTo(0, 650);
       return;
     }
 
     const targetElement = document.querySelector(targetId);
 
     if (targetElement) {
-      // 対象要素の位置へスムーススクロールする
-      window.scrollTo({
-        top: targetElement.offsetTop,
-        behavior: "smooth"
-      });
+      // ヘッダーの高さを動的に取得してスクロール位置を調整（追従ヘッダーによる見出しの被りを防止）
+      const header = document.querySelector("header");
+      const headerHeight = header ? header.offsetHeight : 0;
+      const targetY = targetElement.offsetTop - headerHeight;
+
+      // 650msかけてスムースに指定位置へスクロール（軽快かつ洗練された速度）
+      smoothScrollTo(targetY, 650);
     }
   });
 });
