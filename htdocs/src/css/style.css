@@ -1,18 +1,27 @@
 @charset "UTF-8";
 
+/* スムーススクロール & 追従ヘッダー被り防止 */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 /* ==========================================================================
    Base & Reset (Stylish Business Theme: Blue & White)
    ========================================================================== */
 :root {
-  --primary-color: #0f4c81; /* Classic Blue */
-  --secondary-color: #2b70af; /* Lighter Blue */
-  --accent-color: #1abc9c; /* Subtle Teal */
-  --text-main: #333333;
-  --text-light: #555555;
-  --bg-color: #f7f9fc; /* Very light cool grey */
+  --primary-color: #0f4c81; /* メインカラー (Classic Blue) */
+  --secondary-color: #2b70af; /* サブカラー (Lighter Blue) */
+  --accent-color: #1abc9c; /* アクセントカラー (Subtle Teal) */
+  --text-main: #333333; /* 主要テキスト色 */
+  --text-light: #555555; /* 補足テキスト色 */
+  --bg-color: #f7f9fc; /* 全体背景色 (薄いクールグレー) */
   --white: #ffffff;
-  --border-radius: 8px;
-  --box-shadow: 0 10px 25px rgba(15, 76, 129, 0.08);
+  --border-radius: 8px; /* 共通の角丸 */
+  --box-shadow: 0 10px 25px rgba(15, 76, 129, 0.08); /* コンテナ用シャドウ */
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.06); /* カード用シャドウ */
+  --transition: all 0.3s ease; /* 標準のトランジション */
+  --transition-bezier: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* プレミアムな動き用 */
 }
 
 * {
@@ -30,9 +39,8 @@ body {
 }
 
 a {
-  text-decoration: none;
   color: var(--primary-color);
-  transition: color 0.3s ease;
+  transition: var(--transition);
 }
 
 a:hover {
@@ -49,14 +57,13 @@ ul {
   list-style: none;
 }
 
-
 /* ==========================================================================
    Header & Navigation
    ========================================================================== */
 header {
   background-color: var(--white);
   padding: 15px 5%;
-  position: sticky;
+  position: sticky; /* 追従ヘッダー */
   top: 0;
   z-index: 999;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
@@ -66,9 +73,8 @@ header {
 }
 
 header h1 {
-  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem); /* 画面幅に合わせて自動縮小 */
   font-weight: 700;
-  color: var(--primary-color);
   white-space: nowrap;
 }
 
@@ -77,20 +83,18 @@ header h1 span {
   font-size: clamp(1.4rem, 2.8vw, 1.8rem);
 }
 
-/* タイトルリンクのスタイル（色を継承し、下線を消す） */
 header h1 a {
-  color: inherit;
+  color: inherit; /* ロゴリンクの色をヘッダーと統合 */
 }
 
 header h1 a:hover {
-  color: inherit;
   opacity: 0.8;
 }
 
 header ul {
   display: flex;
-  gap: clamp(15px, 2vw, 30px);
-  margin-left: auto; /* 右寄せを強制 */
+  gap: clamp(15px, 2vw, 30px); /* 画面幅に合わせた流動的な間隔 */
+  margin-left: auto; /* ナビゲーションの右寄せ */
 }
 
 header ul li a {
@@ -101,6 +105,7 @@ header ul li a {
   white-space: nowrap;
 }
 
+/* ナビゲーションのホバー時に下線が広がるアニメーション */
 header ul li a::after {
   content: '';
   position: absolute;
@@ -116,13 +121,13 @@ header ul li a:hover::after {
   width: 100%;
 }
 
-/* ハンバーガーメニュー用のCSS */
+/* ハンバーガーボタン (スマホ専用表示) */
 .hamburger {
   display: none;
   flex-direction: column;
   cursor: pointer;
   gap: 6px;
-  margin-left: auto; /* 右端へ寄せる */
+  margin-left: auto;
 }
 
 .hamburger span {
@@ -130,12 +135,13 @@ header ul li a:hover::after {
   height: 3px;
   background-color: var(--primary-color);
   border-radius: 3px;
-  transition: 0.3s;
+  transition: var(--transition);
 }
 
 /* ==========================================================================
    Main & Layout Container
    ========================================================================== */
+/* メインビジュアルグラデーション */
 .main_img {
   width: 100%;
   height: 350px;
@@ -143,6 +149,7 @@ header ul li a:hover::after {
   position: relative;
 }
 
+/* メインビジュアル中央テキスト */
 .main_img::after {
   content: "Welcome to My Portfolio";
   position: absolute;
@@ -150,21 +157,22 @@ header ul li a:hover::after {
   left: 50%;
   transform: translate(-50%, -50%);
   color: rgba(255, 255, 255, 0.9);
-  font-size: clamp(1.8rem, 5vw, 3rem); /* 画面幅に合わせて文字サイズを自動調整 */
+  font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  width: 90%; /* 画面幅を超えないように制限 */
+  width: 90%;
   line-height: 1.3;
 }
 
+/* 主要コンテンツコンテナ (スマホ時でも安全余白を自動確保) */
 .container {
   max-width: 1100px;
-  width: calc(100% - 40px); /* 1100px未満の画面で左右に20pxずつの安全余白を確保 */
+  width: calc(100% - 40px);
   margin: -60px auto 50px;
   background-color: var(--white);
-  padding: clamp(30px, 5vw, 50px); /* コンテナの余白を 30px〜50px で流動化 */
+  padding: clamp(30px, 5vw, 50px);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   position: relative;
@@ -174,6 +182,7 @@ header ul li a:hover::after {
 /* ==========================================================================
    Typography & Titles
    ========================================================================== */
+/* 各セクション共通タイトル (アクセント線付き) */
 .section-title {
   font-size: 2rem;
   text-align: center;
@@ -185,7 +194,7 @@ header ul li a:hover::after {
 
 .section-title::after {
   content: '';
-  display: block; /* 疑似要素を確実にブロック表示する */
+  display: block;
   width: 60px;
   height: 4px;
   background-color: var(--accent-color);
@@ -205,6 +214,7 @@ header ul li a:hover::after {
   letter-spacing: 0.15em;
 }
 
+/* セクション小見出し */
 h3 {
   font-size: 1.5rem;
   color: var(--primary-color);
@@ -225,11 +235,11 @@ h3 {
 .titleSI p {
   font-size: 1.1rem;
   color: var(--text-light);
-  margin-bottom: 10px; /* 3つのpタグの間隔を自然に */
+  margin-bottom: 10px;
 }
 
 .titleSI p:last-of-type {
-  margin-bottom: 30px; /* 最後のp（挨拶文）の後だけ広めに */
+  margin-bottom: 30px;
 }
 
 .titleSI p span {
@@ -246,18 +256,18 @@ h3 {
   border: 4px solid var(--white);
 }
 
-/* Flexbox for Lists */
 .introduction_flexbox {
   display: flex;
   justify-content: center;
-  gap: clamp(20px, 4vw, 40px); /* カード同士の隙間を 20px〜40px で流動化 */
+  gap: clamp(20px, 4vw, 40px);
   margin-bottom: 60px;
 }
 
+/* 自己紹介・スキル紹介カード */
 .list-card {
   flex: 1;
   background-color: var(--bg-color);
-  padding: clamp(20px, 3vw, 30px); /* カード内側余白を 20px〜30px で流動化 */
+  padding: clamp(20px, 3vw, 30px);
   border-radius: var(--border-radius);
   box-shadow: 0 4px 10px rgba(0,0,0,0.03);
   text-align: center;
@@ -287,7 +297,6 @@ h3 {
   border-bottom: none;
 }
 
-/* Revert skill links to standard text links with overflow protection */
 .list-card ul.Web {
   margin-top: 15px;
 }
@@ -296,17 +305,13 @@ h3 {
   display: inline-block;
   max-width: 100%;
   font-weight: 600;
-  word-break: break-all; /* Prevent overflow of long words like AI-coding/server */
-  transition: color 0.3s ease;
-}
-
-.list-card ul.Web li a:hover {
-  color: var(--accent-color);
+  word-break: break-all; /* 長い単語のはみ出し防止 */
 }
 
 /* ==========================================================================
    Gallery (Sample Implementations)
    ========================================================================== */
+/* 自己PR・強みセクションのグリッド配置 */
 .gallery_flexbox {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -314,11 +319,12 @@ h3 {
   margin-bottom: 50px;
 }
 
+/* 自己PRカード (ホバー時に上にスッと浮き上がるアニメーション) */
 .image {
   background-color: var(--white);
   border-radius: var(--border-radius);
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -348,9 +354,6 @@ h3 {
 }
 
 /* ==========================================================================
-   Training (Projects)
-   ========================================================================== */
-/* ==========================================================================
    Project Items (Sample & Training)
    ========================================================================== */
 .titleSample {
@@ -358,9 +361,10 @@ h3 {
   margin: 0 auto;
 }
 
+/* 各実績カードレイアウト */
 .project-item {
   width: 100%;
-  margin-bottom: 80px; /* Increase gap between items for visual breathing room */
+  margin-bottom: 80px;
   text-align: left;
 }
 
@@ -373,12 +377,13 @@ h3 {
   padding-left: 10px;
 }
 
+/* バナー画像枠 (ホバー時に若干拡大しクリック感を提供) */
 .project-item a {
   display: block;
   margin-bottom: 15px;
   border-radius: var(--border-radius);
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.3s ease;
 }
 
@@ -400,14 +405,71 @@ h3 {
   line-height: 1.7;
 }
 
-/* Spacing for h3 in training & original training section */
 #Training,
 #originalTraining {
   font-size: 1.5rem;
   color: var(--primary-color);
-  margin: 80px 0 40px; /* Increase margins and keep aligned with wrapper width */
+  margin: 80px 0 40px;
   border-left: 5px solid var(--primary-color);
   padding-left: 10px;
+}
+
+/* ==========================================================================
+   Structured Project Descriptions
+   ========================================================================== */
+/* 実績用の3項目（課題内容・工夫・手順）構造化定義リストコンテナ */
+.project-desc {
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  padding: clamp(15px, 3vw, 25px);
+  margin-top: 15px;
+  text-align: left;
+  border-left: 4px solid var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.desc-list dt {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.05rem;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.05em;
+}
+
+.desc-list dt:first-of-type {
+  margin-top: 0;
+}
+
+.desc-list dd {
+  margin-left: 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.desc-list dd ul,
+.desc-list dd ol {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.desc-list dd li {
+  margin-bottom: 6px;
+}
+
+.desc-list dd li:last-child {
+  margin-bottom: 0;
+}
+
+.desc-list dd ul {
+  list-style-type: disc;
+}
+
+.desc-list dd ol {
+  list-style-type: decimal;
 }
 
 /* ==========================================================================
@@ -419,96 +481,6 @@ footer {
   text-align: center;
   padding: 25px 0;
   font-size: 0.9rem;
-}
-
-/* ==========================================================================
-   Responsive (Mobile)
-   ========================================================================== */
-@media (max-width: 768px) {
-  .hamburger {
-    display: flex;
-    z-index: 100;
-  }
-  
-  header ul {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 70px;
-    right: 0;
-    background-color: var(--white);
-    width: max-content; /* 文字がはみ出ないピッタリのサイズに自動調整 */
-    min-width: 160px; /* 最低限の幅を確保 */
-    text-align: right; /* テキストも右寄せ */
-    box-shadow: -5px 10px 20px rgba(0,0,0,0.1); /* 影の方向を左下へ */
-    padding: 20px 25px;
-    gap: 0;
-    border-radius: 0 0 0 var(--border-radius); /* 左下だけ角丸 */
-  }
-  
-  header ul.active {
-    display: flex;
-  }
-  
-  header ul li {
-    margin: 15px 0;
-  }
-
-  header ul li a {
-    font-size: 0.95rem; /* モバイルドロップダウン内リンクの文字サイズ微調整 */
-  }
-  
-  /* Hamburger Animation */
-  .hamburger.active span:nth-child(1) {
-    transform: translateY(9px) rotate(45deg);
-  }
-  .hamburger.active span:nth-child(2) {
-    opacity: 0;
-  }
-  .hamburger.active span:nth-child(3) {
-    transform: translateY(-9px) rotate(-45deg);
-  }
-
-  .main_img {
-    height: 250px;
-  }
-
-  .container {
-    width: calc(100% - 30px); /* 画面幅768px以下で左右に15pxずつのマージンを確保 */
-    margin: -30px auto 30px; /* 中央寄せ */
-    padding: 30px 20px;
-  }
-
-  .introduction_flexbox {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .list-card {
-    padding: 20px; /* 375px画面の圧迫感を減らすため余白をスリム化 */
-  }
-
-  .list-card ul.Web li a {
-    font-size: 0.9rem; /* Adjusted font size for mobile text links */
-  }
-
-  .titleSample {
-    max-width: 100%;
-  }
-
-  .project-item {
-    margin-bottom: 50px; /* Reduce vertical spacing on mobile screens */
-  }
-
-  #Training,
-  #originalTraining {
-    margin: 40px 0 20px;
-  }
-
-  footer {
-    /* 端末やブラウザの下部操作バー被りを防ぐ動的セーフエリア対応（未対応環境では 60px 相当の余白） */
-    padding: 25px 0 calc(35px + env(safe-area-inset-bottom, 25px));
-  }
 }
 
 /* ==========================================================================
@@ -524,10 +496,9 @@ footer {
   gap: 8px;
   font-weight: 600;
   color: var(--primary-color);
-  text-decoration: none;
   border-bottom: 1.5px solid rgba(15, 76, 129, 0.3);
   padding-bottom: 2px;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .popup-trigger:hover {
@@ -540,31 +511,29 @@ footer {
   font-size: 1.1rem;
 }
 
-/* Lightbox overlay background */
+/* モーダル背景オーバーレイ (ぼかし効果を適用) */
 .modal {
-  display: none; /* Hidden by default */
+  display: none;
   position: fixed;
-  z-index: 10000; /* Sit on top of everything, including sticky header */
+  z-index: 10000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(15, 23, 42, 0.85); /* Modern dark slate backdrop */
-  backdrop-filter: blur(8px); /* Smooth background blur for premium styling */
+  overflow: auto;
+  background-color: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
   opacity: 0;
   transition: opacity 0.3s ease;
   align-items: center;
   justify-content: center;
 }
 
-/* Show class for modal transition */
 .modal.show {
   display: flex;
   opacity: 1;
 }
 
-/* Modal content wrapper to align image and caption */
 .modal-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -574,14 +543,13 @@ footer {
   margin: auto;
 }
 
-/* Dedicated container that shrink-wraps exactly to the image's actual size */
 .image-container {
   position: relative;
   display: inline-block;
   max-width: 100%;
 }
 
-/* The Modal Image */
+/* 拡大ポップアップ画像枠 */
 .modal-content {
   display: block;
   max-width: 100%;
@@ -590,7 +558,7 @@ footer {
   border-radius: var(--border-radius);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   transform: scale(0.95);
-  transition: transform 0.3s ease;
+  transition: var(--transition);
   border: 4px solid var(--white);
 }
 
@@ -598,7 +566,6 @@ footer {
   transform: scale(1);
 }
 
-/* Caption of Modal Image */
 .modal-caption {
   margin-top: 15px;
   color: var(--white);
@@ -609,7 +576,7 @@ footer {
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* The Close Button */
+/* モーダルを閉じるボタン (画像の右上角に吸着) */
 .modal-close {
   position: absolute;
   top: -22px;
@@ -619,7 +586,7 @@ footer {
   font-size: 26px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 10005; /* Sit above the image frame */
+  z-index: 10005;
   width: 44px;
   height: 44px;
   display: flex;
@@ -627,19 +594,152 @@ footer {
   justify-content: center;
   border-radius: 50%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: var(--transition-bezier);
 }
 
-.modal-close:hover,
-.modal-close:focus {
+.modal-close:hover {
   background-color: var(--primary-color);
   color: var(--white);
   transform: rotate(90deg) scale(1.1);
   box-shadow: 0 6px 20px rgba(15, 76, 129, 0.35);
 }
 
-/* Close button mobile responsive overrides */
+/* ==========================================================================
+   Back to Top Button
+   ========================================================================== */
+/* 浮遊式（Floating）トップに戻るボタン */
+.page-top-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  transition: var(--transition-bezier);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px); /* 初期状態で微かに下がった位置に配置 */
+}
+
+.page-top-btn.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0); /* スクロール時に定位置にスライドイン */
+}
+
+.page-top-btn:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(26, 188, 156, 0.35);
+}
+
+.page-top-btn .arrow {
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid var(--white);
+  border-right: 3px solid var(--white);
+  transform: translateY(2px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   Responsive (Mobile)
+   ========================================================================== */
+/* スマートフォン・タブレット用 (最大幅768pxに完全集約) */
 @media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+    z-index: 100;
+  }
+  
+  /* スマホ用ドロップダウンメニュー */
+  header ul {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background-color: var(--white);
+    width: max-content;
+    min-width: 160px;
+    text-align: right;
+    box-shadow: -5px 10px 20px rgba(0,0,0,0.1);
+    padding: 20px 25px;
+    gap: 0;
+    border-radius: 0 0 0 var(--border-radius);
+  }
+  
+  header ul.active {
+    display: flex;
+  }
+  
+  header ul li {
+    margin: 15px 0;
+  }
+ 
+  header ul li a {
+    font-size: 0.95rem;
+  }
+  
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+  
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+ 
+  .main_img {
+    height: 250px;
+  }
+ 
+  .container {
+    width: calc(100% - 30px);
+    margin: -30px auto 30px;
+    padding: 30px 20px;
+  }
+ 
+  .introduction_flexbox {
+    flex-direction: column;
+    gap: 20px;
+  }
+ 
+  .list-card {
+    padding: 20px;
+  }
+ 
+  .list-card ul.Web li a {
+    font-size: 0.9rem;
+  }
+ 
+  .titleSample {
+    max-width: 100%;
+  }
+ 
+  .project-item {
+    margin-bottom: 50px;
+  }
+ 
+  #Training,
+  #originalTraining {
+    margin: 40px 0 20px;
+  }
+ 
+  footer {
+    /* 画面下部操作バーとの被りを防ぐセーフエリア余白対応 */
+    padding: 25px 0 calc(35px + env(safe-area-inset-bottom, 25px));
+  }
+
+  /* スマホ用モーダル閉じるボタン配置調整 */
   .modal-close {
     top: 10px;
     right: 10px;
@@ -647,5 +747,20 @@ footer {
     height: 38px;
     font-size: 22px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  /* スマホ用ページトップに戻るボタン調整 */
+  .page-top-btn {
+    right: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 25px));
+    width: 44px;
+    height: 44px;
+  }
+  
+  .page-top-btn .arrow {
+    width: 10px;
+    height: 10px;
+    border-top: 2.5px solid var(--white);
+    border-right: 2.5px solid var(--white);
   }
 }

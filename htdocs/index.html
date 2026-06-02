@@ -52,7 +52,7 @@
           <span>Skills</span>
           </h3>
           <ul class="Web">
-            <li><a href="#">HTML・CSS</a></li>
+            <li><a href="#">HTML/CSS</a></li>
             <li><a href="#javascript">JavaScript</a></li>
             <li><a href="#php-mysql">PHP/MySQL</a></li>
             <li><a href="#wordpress">WordPress</a></li>
@@ -96,38 +96,115 @@
 
         <div class="project-item" id="javascript">
           <h4>JavaScript: 簡易ピアノ</h4>
-          <a href="js/index.html"><img src="src/images/piano_demo.png" alt="簡易ピアノ"></a>
-          <p>
-            JavaScriptのaddEventListenerなどを使用して、鍵盤を叩くとそれぞれの音が出るようにしました。<br>jQueryを利用しています。
-          </p>
+          <a href="js/index.html" target="_blank" rel="noopener noreferrer">
+            <img src="src/images/piano_demo.png" alt="簡易ピアノ">
+          </a>
+          <div class="project-desc">
+            <dl class="desc-list">
+              <dt>📌 課題内容</dt>
+              <dd>JavaScriptおよびjQueryを用いて、ブラウザ上で直感的に演奏できる簡易電子ピアノアプリを制作しました。</dd>
+              <dt>💡 工夫した点</dt>
+              <dd>
+                <ul>
+                  <li>日本語・英語・ドイツ語の「3言語表示切り替え機能」を搭載し、幅広いユーザー層に対応したグローバルな多言語設計（マルチリンガル対応）を実現しました。</li>
+                  <li>打鍵時に鍵盤が沈むアニメーションとカラー変化をCSSで表現しました。</li>
+                  <li>「きらきら星」もしくは「チューリップ」の曲が自動で演奏する機能を付けました。</li>
+                </ul>
+              </dd>
+              <dt>🎮 操作手順</dt>
+              <dd>
+                <ol>
+                  <li>画面右下の言語選択メニューから、表示する言語を切り替えることができます。</li>
+                  <li>画面上の白鍵をクリックすると、それぞれの音階の音が鳴ります。</li>
+                  <li>自動演奏ボタンを押すと２曲のどちらかがランダムで演奏されます。</li>
+                </ol>
+              </dd>
+            </dl>
+          </div>
         </div>
 
         <div class="project-item" id="php-mysql">
           <h4>PHP/MySQL: ECサイト</h4>
-          <a href="ec_site/index.php"><img src="src/images/ec_demo.png" alt="ECサイト"></a>
-          <p>
-            PHPとMySQLを利用したECサイトです。<br>
-            ログイン機能や商品管理機能、ショッピングカート機能などを実装しました。
-          </p>
+          <a href="ec_site/index.php" target="_blank" rel="noopener noreferrer">
+            <img src="src/images/ec_demo.png" alt="ECサイト">
+          </a>
+          <div class="project-desc">
+            <dl class="desc-list">
+              <dt>📌 課題内容</dt>
+              <dd>PHPバックエンドとMySQLデータベースを連携させ、会員登録・ログイン、商品一覧、カート機能、管理者向け商品管理（CRUD）機能などを統合した安全なECサイトの開発を行いました。</dd>
+              <dt>💡 工夫した点</dt>
+              <dd>
+                <ul>
+                  <li>XSS（クロスサイトスクリプティング）対策としてのサニタイズ処理や、SQLインジェクションを防ぐプリペアードステートメントを徹底し、高いセキュリティ水準を確保しました。</li>
+                  <li>ログイン状態やユーザー権限（一般ユーザー/管理者）に応じたアクセス制限を細かく設定し、未認可アクセスの保護とページリダイレクトを実装しました。</li>
+                  <li>フォームの再送信による二重注文や多重登録を防止するため、PRG（Post-Redirect-Get）パターンを適用してシステム設計を行いました。</li>
+                </ul>
+              </dd>
+              <dt>🔍 閲覧手順</dt>
+              <dd>
+                <ol>
+                  <li>上の画像またはバナーリンクをクリックすると、ECサイトのトップページが別タブで表示されます。</li>
+                  <li>新規ユーザーとしてアカウント登録を行ってログインし、商品のカート追加や購入完了までのフローをお試しいただけます。</li>
+                  <li>管理者としてログインすることで、商品管理機能（追加・編集・削除）を行う管理者専用ページの機能をご確認いただけます。</li>
+                </ol>
+              </dd>
+            </dl>
+          </div>
         </div>
 
         <div class="project-item" id="wordpress">
           <h4>WordPress: オリジナルテーマ制作（CMS化）</h4>
-          <a href="wp/"><img src="src/images/wordpress_demo.png" alt="WordPressテーマ作成"></a>
-          <p>
-            既存の静的HTML/CSSファイルをベースに、PHPを用いてWordPressのオリジナルカスタムテーマ化（CMS化）を行いました。<br>
-            管理画面から各コンテンツ（投稿や固定ページなど）を簡単かつ安全に更新できるようにテンプレートを分割・再構築し、動的なサイト管理システムとして統合。クライアントがHTMLコードを直接編集せずに安全に運用できる、実用性と保守性の高いサイト設計の手法を修得しました。
-          </p>
+          <a href="wp/" target="_blank" rel="noopener noreferrer">
+            <img src="src/images/wordpress_demo.png" alt="WordPressテーマ作成">
+          </a>
+          <div class="project-desc">
+            <dl class="desc-list">
+              <dt>📌 課題内容</dt>
+              <dd>静的なHTML/CSSのデザインデータを分解・再構築し、PHPを用いてWordPressのオリジナルカスタムテーマ化（CMS化）を行いました。</dd>
+              <dt>💡 工夫した点</dt>
+              <dd>
+                <ul>
+                  <li>ヘッダー、フッター、サイドバーなどの共通要素をコンポーネント化し、テンプレートファイルを細分化することで、コードの保守性と可読性を向上させました。</li>
+                  <li>お知らせ（カスタム投稿）や会社情報などの動的な変更箇所をWordPressの管理画面と連動させ、HTMLの知識がない管理者でも簡単かつ安全にサイト更新を行える設計にしました。</li>
+                </ul>
+              </dd>
+              <dt>🔍 閲覧手順</dt>
+              <dd>
+                <ol>
+                  <li>上の画像リンクからWordPressで動的化されたカスタムサイトを開くことができます。</li>
+                  <li>お知らせ記事などの動的投稿が自動反映され、美しく出力されている構成をご確認いただけます。</li>
+                </ol>
+              </dd>
+            </dl>
+          </div>
         </div>
         <h3 id="originalTraining">独自課題</h3>
         <div class="project-item" id="clean-manager">
-          <h4>AI-coding/ロリポップサーバー: 掃除管理アプリ (Clean Maneger)</h4>
-          <a href="http://cleanmaneger-release.joinus-dc-kyobashi.com/" target="_blank" rel="noopener noreferrer"><img src="src/images/clean_manager_login.png" alt="掃除管理アプリ Clean Manager"></a>
-          <p>
-            ローカルのみでしか機能せず、仕様の引継ぎがされなかった掃除管理アプリをAI(Antigravity, Codex)
-            を活用しつつリバースエンジニアリングし、かつサーバー上で利用できるように改修。<br>
-            ログイン機能、通知メール送信、お問い合わせフォーム作成など複数の機能を追加し、さらにリファクタリングによって保守性や可読性を向上させた改修を行い、仕様書を仕上げたうえで実装につなげました。
-          </p>
+          <h4>AI-coding/ロリポップサーバー: 掃除管理アプリ (Clean Manager)</h4>
+          <a href="http://cleanmaneger-release.joinus-dc-kyobashi.com/" target="_blank" rel="noopener noreferrer">
+            <img src="src/images/clean_manager_login.png" alt="掃除管理アプリ Clean Manager">
+          </a>
+          <div class="project-desc">
+            <dl class="desc-list">
+              <dt>📌 課題内容</dt>
+              <dd>ローカル環境のみで動作し、ドキュメントや引き継ぎ仕様書が存在しなかった既存の掃除管理アプリを対象に、AIを活用したリバースエンジニアリングを実施。ソースコードの読解と分析に基づき仕様書を新規構築し、Webサーバー（ロリポップ等）へ実稼働デプロイを行いました。</dd>
+              <dt>💡 工夫した点</dt>
+              <dd>
+                <ul>
+                  <li>ログイン機能、管理画面、自動通知メール送信システム、お問い合わせフォームなど、実稼働に必要な複数のバックエンドシステムを新規設計・構築しました。</li>
+                  <li>リファクタリングを徹底し、乱雑だったプログラムをモジュール化。可読性と今後の拡張性・保守性を大幅に高めました。</li>
+                  <li>実装だけでなく、システム全体仕様書やデータベースのテーブル定義書などを自らゼロから書き起こし、高品質な開発ドキュメント群を整備しました。</li>
+                </ul>
+              </dd>
+              <dt>🔍 操作手順／閲覧手順</dt>
+              <dd>
+                <ol>
+                  <li>上の画像リンクをクリックすると、本番サーバー上で稼働中の「掃除管理アプリ」ログイン画面が別タブで表示されます。</li>
+                  <li>下の「掃除アプリのデモ画像」テキストリンクをクリックすると、ログイン後の直感的なスケジュール・掃除当番割付管理画面（デモ）をモーダルポップアップでご確認いただけます。</li>
+                </ol>
+              </dd>
+            </dl>
+          </div>
           <p class="demo-link-wrapper">
             <a href="src/images/clean_manager_demo.png" class="popup-trigger" data-caption="掃除管理アプリ デモ画面 (DutyShuffle)">
               <span class="icon-image">📸</span> 掃除アプリのデモ画像 (掲載許可済み)
@@ -150,5 +227,9 @@
       <div id="modalCaption" class="modal-caption"></div>
     </div>
   </div>
+  <!-- Topに戻るボタン -->
+  <a href="#" id="page-top" class="page-top-btn" aria-label="ページトップへ戻る">
+    <span class="arrow"></span>
+  </a>
 </body>
 </html>

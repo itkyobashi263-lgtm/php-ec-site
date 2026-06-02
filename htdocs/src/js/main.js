@@ -128,3 +128,16 @@ document.addEventListener("keydown", (e) => {
     closeModal();
   }
 });
+
+// 「Topに戻る」ボタンのスクロール時表示・非表示制御
+const pageTopBtn = document.getElementById("page-top");
+if (pageTopBtn) {
+  window.addEventListener("scroll", () => {
+    // 300px以上スクロールされたらボタンを表示
+    if (window.pageYOffset > 300) {
+      pageTopBtn.classList.add("show");
+    } else {
+      pageTopBtn.classList.remove("show");
+    }
+  });
+}
